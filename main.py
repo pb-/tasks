@@ -15,8 +15,9 @@ def prompt(state):
 
 def run():
     state = dict(selected=None, tasks=tasks.load(tasks_file))
-    state = reducers.root(state, actions.select_next(state['tasks']))
     while True:
+        if state['selected'] is None:
+            state = reducers.root(state, actions.select_next(state['tasks']))
         try:
             input_ = raw_input(prompt(state))
             state = commands.evaluate(input_, state)

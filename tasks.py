@@ -59,12 +59,24 @@ def dump(file_name, tasks):
         json.dump(tasks, open(file_name, 'w'), sort_keys=True, indent=2)
 
 
-def render(task, mark=None):
+def shell_color(color, text):
+    code = {
+        'blue': '1;34',
+        'yellow': '1;33',
+        'green': '1;32',
+        'white': '0;37',
+        'gray': '1;30',
+    }.get(color)
+
+    return '\033[{code}m{text}\033[0m'.format(code=code, text=text)
+
+
+def render(task, mark=None, colorizer=shell_color):
     color = {
-        'todo': 34,
-        'in-progress': 33,
-        'done': 32,
-    }.get(task['status'], 30)
+        'todo': 'blue',
+        'in-progress': 'yellow',
+        'done': 'green',
+    }.get(task['status'], 'gray')
 
     if mark is None:
         symbol = ''
@@ -73,14 +85,14 @@ def render(task, mark=None):
     else:
         symbol = ' '
 
-    return (
-        '\033[1;30m{symbol}#{num}\033[0m '
-        '\033[1;{color}m{status}\033[0m '
-        '\033[0;37m{title}\033[0m'
-    ).format(symbol=symbol, color=color, **task)
+    return ' '.join((
+        colorizer('gray', '{symbol}#{num}'),
+        colorizer(color, '{status}'),
+        colorizer('white', '{title}'),
+    )).format(symbol=symbol, color=color, **task)
 
 
-def render_list(tasks, selected):
+def render_list(tasks, selected, colorizer=shell_color):
     return '\n'.join(
-        render(task, task['num'] == selected) for task in tasks
+        render(task, task['num'] == selected, colorizer) for task in tasks
     )

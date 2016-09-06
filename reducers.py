@@ -40,6 +40,12 @@ def tasks(state, action):
             'created': action['created'],
             'status': TODO,
         }]
+    elif action['type'] == actions.ORDER:
+        order = action['order']
+        ordered = [t for num in order for t in state if t['num'] == num]
+        rest = [t for t in state if t['num'] not in order]
+
+        return ordered + rest
     else:
         return [task(t, action) for t in state]
 

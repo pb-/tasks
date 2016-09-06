@@ -5,6 +5,7 @@ START = 2
 STOP = 3
 COMPLETE = 4
 SELECT = 5
+ORDER = 6
 
 
 def select(num):
@@ -34,3 +35,7 @@ def stop(num):
 
 def complete(num, dt):
     return dict(type=COMPLETE, num=num, completed=dt)
+
+
+def order(order):
+    return dict(type=ORDER, order=order)

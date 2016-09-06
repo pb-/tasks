@@ -1,3 +1,5 @@
+import os
+import re
 from argparse import ArgumentParser
 from functools import partial
 
@@ -111,3 +113,23 @@ def status(state, args):
 def help(state, args):
     _parser.print_help()
     return state
+
+
+@register('order', help='re-order todo items')
+def order(state, args):
+    path = os.path.join('/tmp', 'tasks.{}.edit'.format(os.getpid()))
+    open(path, 'w').write(tasks.render_list(
+        tasks.iter_backlog(state['tasks']), None, lambda _, text: text))
+    os.system('editor {}'.format(path))
+
+    order = []
+    pattern = re.compile(r'^ ?#(?P<num>\d+) ')
+    with open(path) as f:
+        for line in f:
+            match = pattern.match(line)
+            if match:
+                order.append(int(match.group('num')))
+
+    os.remove(path)
+
+    return reducers.root(state, actions.order(order))
