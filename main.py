@@ -1,6 +1,8 @@
 import os
 import readline
 
+from textwrap import dedent
+
 from . import actions, commands, reducers, tasks
 
 
@@ -13,7 +15,15 @@ def prompt(state):
     return '#{}> '.format(state['selected']) if state['selected'] else '> '
 
 
+def print_banner():
+    print(dedent("""\
+        welcome to tasks
+        type help for help, exit with ^D or with ^C to discard changes
+    """))
+
+
 def run():
+    print_banner()
     tasks_file = os.path.join(os.getenv('HOME'), '.tasks.json')
     state = dict(selected=None, tasks=tasks.load(tasks_file))
 

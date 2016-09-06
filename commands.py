@@ -133,3 +133,9 @@ def order(state, args):
     os.remove(path)
 
     return reducers.root(state, actions.order(order))
+
+
+@register('clear', help='clear screen')
+def clear(state, args):
+    os.system('clear')
+    return state
