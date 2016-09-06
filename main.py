@@ -3,10 +3,10 @@ import readline
 
 from . import actions, commands, reducers, tasks
 
-tasks_file = os.path.join(os.getenv('HOME'), '.tasks.json')
 
-readline.parse_and_bind('tab: complete')
-readline.parse_and_bind('set editing-mode vi')
+def configure_readline():
+    readline.parse_and_bind('tab: complete')
+    readline.parse_and_bind('set editing-mode vi')
 
 
 def prompt(state):
@@ -14,7 +14,11 @@ def prompt(state):
 
 
 def run():
+    tasks_file = os.path.join(os.getenv('HOME'), '.tasks.json')
     state = dict(selected=None, tasks=tasks.load(tasks_file))
+
+    configure_readline()
+
     while True:
         if state['selected'] is None:
             state = reducers.root(state, actions.select_next(state['tasks']))
