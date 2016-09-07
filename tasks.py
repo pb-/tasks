@@ -88,7 +88,6 @@ def render(task, mark=None, colorizer=shell_color, digits=1):
     padding = ' ' * max(0, digits - len(str(task['num'])) - len(symbol))
 
     return ' '.join((
-        '',
         colorizer('gray', '{padding}{symbol}#{num}'),
         colorizer(color, '{status}'),
     ) + (('{completed:.10}', ) if task['status'] == DONE else tuple()) + (

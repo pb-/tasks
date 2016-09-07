@@ -102,7 +102,7 @@ def backlog(state, args):
 def status(state, args):
     task = tasks.find(state['tasks'], state['selected'])
     if task:
-        print('Currently selected ' + tasks.render(task))
+        print('Currently selected ' + tasks.render(task, mark=None))
     else:
         print('No task selected')
 
