@@ -1,5 +1,6 @@
 import os
 import readline
+import sys
 
 from textwrap import dedent
 
@@ -22,9 +23,8 @@ def print_banner():
     """))
 
 
-def run():
+def run(tasks_file):
     print_banner()
-    tasks_file = os.path.join(os.getenv('HOME'), '.tasks.json')
     state = dict(selected=None, tasks=tasks.load(tasks_file))
 
     configure_readline()
@@ -47,9 +47,18 @@ def run():
     tasks.dump(tasks_file, state['tasks'])
 
 
-if __name__ == '__main__':
-    lock = utils.get_lock()
-    if lock:
-        run()
+def try_run():
+    if len(sys.argv) > 1:
+        tasks_file = sys.argv[1]
     else:
+        tasks_file = os.path.join(os.getenv('HOME'), '.tasks.json')
+
+    try:
+        with utils.lock(tasks_file):
+            run(tasks_file)
+    except utils.Locked:
         print('could not obtain lock, already running?')
+
+
+if __name__ == '__main__':
+    try_run()
