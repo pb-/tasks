@@ -23,9 +23,21 @@ def print_banner():
     """))
 
 
+def notify_switch(previously_selected, state):
+    if state['selected'] != previously_selected:
+        if state['selected'] is not None:
+            print('Now on ' + tasks.render(tasks.find(
+                state['tasks'], state['selected'])))
+        else:
+            print('Not on any task')
+
+    return state['selected']
+
+
 def run(tasks_file):
     print_banner()
     state = dict(selected=None, tasks=tasks.load(tasks_file))
+    previously_selected = None
 
     configure_readline()
 
@@ -35,7 +47,9 @@ def run(tasks_file):
             state = reducers.dispatch(
                 state, actions.select_next(state['tasks'])
             )
+
         try:
+            previously_selected = notify_switch(previously_selected, state)
             input_ = raw_input(prompt(state))
             state = commands.evaluate(input_, state)
             if state is None:
