@@ -3,7 +3,7 @@ import readline
 
 from textwrap import dedent
 
-from . import actions, commands, reducers, tasks
+from . import actions, commands, reducers, tasks, utils
 
 
 def configure_readline():
@@ -46,4 +46,8 @@ def run():
 
 
 if __name__ == '__main__':
-    run()
+    lock = utils.get_lock()
+    if lock:
+        run()
+    else:
+        print('could not obtain lock, already running?')
