@@ -13,3 +13,9 @@ def get_lock():
         return s
     except socket.error:
         return None
+
+
+def separate(predicate, list_):
+    where_true = [x for x in list_ if predicate(x)]
+    where_false = [x for x in list_ if not predicate(x)]
+    return where_true + where_false

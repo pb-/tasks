@@ -6,10 +6,15 @@ STOP = 3
 COMPLETE = 4
 SELECT = 5
 ORDER = 6
+BUMP = 7
 
 
 def select(num):
     return dict(type=SELECT, num=num)
+
+
+def bump(num):
+    return dict(type=BUMP, num=num)
 
 
 def select_next(tasks):
@@ -21,15 +26,15 @@ def create(num, title, dt):
 
 
 def start(num, dt):
-    return dict(type=START, num=num, started=dt)
+    return dict(type=START, num=num, started=dt), bump(num)
 
 
 def stop(num):
-    return dict(type=STOP, num=num)
+    return dict(type=STOP, num=num), bump(num)
 
 
 def complete(num, dt):
-    return dict(type=COMPLETE, num=num, completed=dt)
+    return dict(type=COMPLETE, num=num, completed=dt), bump(num)
 
 
 def order(order):

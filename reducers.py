@@ -1,5 +1,6 @@
 from . import actions
 from .tasks import DONE, IN_PROGRESS, TODO
+from .utils import separate
 
 
 def selected(state, action):
@@ -46,6 +47,8 @@ def tasks(state, action):
         rest = [t for t in state if t['num'] not in order]
 
         return ordered + rest
+    elif action['type'] == actions.BUMP:
+        return separate(lambda t: t['num'] == action['num'], state)
     else:
         return [task(t, action) for t in state]
 
