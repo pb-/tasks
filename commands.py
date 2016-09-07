@@ -123,7 +123,7 @@ def order(state, args):
     os.system('editor {}'.format(path))
 
     order = []
-    pattern = re.compile(r'^ ?#(?P<num>\d+) ')
+    pattern = re.compile(r'^ *#(?P<num>\d+) ')
     with open(path) as f:
         for line in f:
             match = pattern.match(line)
@@ -132,7 +132,7 @@ def order(state, args):
 
     os.remove(path)
 
-    return reducers.dispath(state, actions.order(order))
+    return reducers.dispatch(state, actions.order(order))
 
 
 @register('clear', help='clear screen')

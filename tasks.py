@@ -1,6 +1,5 @@
 import json
 from itertools import chain
-from math import ceil, log
 
 IN_PROGRESS = 'in-progress'
 TODO = 'todo'
@@ -89,6 +88,7 @@ def render(task, mark=None, colorizer=shell_color, digits=1):
     padding = ' ' * max(0, digits - len(str(task['num'])) - len(symbol))
 
     return ' '.join((
+        '',
         colorizer('gray', '{padding}{symbol}#{num}'),
         colorizer(color, '{status}'),
     ) + (('{completed:.10}', ) if task['status'] == DONE else tuple()) + (
@@ -98,7 +98,7 @@ def render(task, mark=None, colorizer=shell_color, digits=1):
 
 def render_list(tasks, selected, colorizer=shell_color):
     tasks = list(tasks)
-    pad = int(ceil(log(max(1, greatest_num(tasks)))))
+    pad = len(str(greatest_num(tasks)))
     return '\n'.join(
         render(task, task['num'] == selected, colorizer, pad) for task in tasks
     )
