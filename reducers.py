@@ -26,6 +26,10 @@ def task(state, action):
             update = [
                 ('status', TODO)
             ]
+        elif action['type'] == actions.EDIT:
+            update = [
+                ('title', action['title'])
+            ]
         else:
             update = []
         return dict(state.items() + update)

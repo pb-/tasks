@@ -135,6 +135,23 @@ def order(state, args):
     return reducers.dispatch(state, actions.order(order))
 
 
+@register('edit', help='change item title', args=(
+    arg('num', nargs='?', type=int),
+))
+def edit(state, args):
+    task = tasks.find(state['tasks'], args.num or state['selected'])
+    path = os.path.join('/tmp', 'tasks.{}.edit'.format(os.getpid()))
+
+    open(path, 'w').write(task['title'])
+    os.system('editor {}'.format(path))
+    title = open(path).read().strip()
+
+    os.remove(path)
+
+    return reducers.dispatch(state, actions.edit(
+        args.num or state['selected'], title))
+
+
 @register('clear', help='clear screen')
 def clear(state, args):
     os.system('clear')

@@ -7,6 +7,7 @@ COMPLETE = 4
 SELECT = 5
 ORDER = 6
 BUMP = 7
+EDIT = 8
 
 
 def select(num):
@@ -39,3 +40,7 @@ def complete(num, dt):
 
 def order(order):
     return dict(type=ORDER, order=order)
+
+
+def edit(num, title):
+    return dict(type=EDIT, num=num, title=title)
