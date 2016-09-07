@@ -54,10 +54,12 @@ def arg(*args, **kwargs):
 def add(state, args):
     num = tasks.greatest_num(state['tasks']) + 1
     action = actions.create(num, ' '.join(args.title), utils.now())
-    state = reducers.root(state, action)
+    state = reducers.dispatch(state, action)
     if args.start:
-        state = reducers.root(state, actions.start(action['num'], utils.now()))
-        state = reducers.root(state, actions.select(action['num']))
+        state = reducers.dispatch(
+            state, actions.start(action['num'], utils.now())
+        )
+        state = reducers.dispatch(state, actions.select(action['num']))
 
     return state
 
@@ -66,7 +68,7 @@ def add(state, args):
     arg('num', nargs='?', type=int),
 ))
 def start(state, args):
-    state = reducers.root(state, actions.start(
+    state = reducers.dispatch(state, actions.start(
         args.num or state['selected'], utils.now()
     ))
     return state
@@ -76,7 +78,7 @@ def start(state, args):
     arg('num', nargs='?', type=int),
 ))
 def done(state, args):
-    state = reducers.root(state, actions.complete(
+    state = reducers.dispatch(state, actions.complete(
         args.num or state['selected'], utils.now()
     ))
     return state
@@ -130,7 +132,7 @@ def order(state, args):
 
     os.remove(path)
 
-    return reducers.root(state, actions.order(order))
+    return reducers.dispath(state, actions.order(order))
 
 
 @register('clear', help='clear screen')

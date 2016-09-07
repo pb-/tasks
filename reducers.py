@@ -55,3 +55,13 @@ def root(state, action):
         selected=selected(state['selected'], action),
         tasks=tasks(state['tasks'], action),
     )
+
+
+def dispatch(state, action):
+    if isinstance(action, dict):
+        state = root(state, action)
+    else:
+        for subaction in action:
+            state = dispatch(state, subaction)
+
+    return state

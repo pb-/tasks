@@ -32,7 +32,9 @@ def run():
     while True:
         selected = tasks.find(state['tasks'], state['selected'])
         if not selected or selected['status'] != tasks.IN_PROGRESS:
-            state = reducers.root(state, actions.select_next(state['tasks']))
+            state = reducers.dispatch(
+                state, actions.select_next(state['tasks'])
+            )
         try:
             input_ = raw_input(prompt(state))
             state = commands.evaluate(input_, state)
