@@ -31,13 +31,13 @@ def find(tasks, num):
         return None
 
 
-def next_num(tasks):
+def greatest_num(tasks):
     greatest = 0
 
     if tasks:
         greatest = max(task['num'] for task in tasks)
 
-    return greatest + 1
+    return greatest
 
 
 def next_backlog_num(tasks):

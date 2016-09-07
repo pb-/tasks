@@ -16,13 +16,8 @@ def select_next(tasks):
     return select(next_backlog_num(tasks))
 
 
-def create(tasks, title, dt):
-    greatest = 0
-
-    if tasks:
-        greatest = max(task['num'] for task in tasks)
-
-    return dict(type=CREATE, num=greatest + 1, title=title, created=dt)
+def create(num, title, dt):
+    return dict(type=CREATE, num=num, title=title, created=dt)
 
 
 def start(num, dt):

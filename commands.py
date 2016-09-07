@@ -52,7 +52,8 @@ def arg(*args, **kwargs):
     arg('-s', '--start', action='store_true'),
 ))
 def add(state, args):
-    action = actions.create(state['tasks'], ' '.join(args.title), utils.now())
+    num = tasks.greatest_num(state['tasks']) + 1
+    action = actions.create(num, ' '.join(args.title), utils.now())
     state = reducers.root(state, action)
     if args.start:
         state = reducers.root(state, actions.start(action['num'], utils.now()))
