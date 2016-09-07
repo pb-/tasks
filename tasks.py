@@ -91,6 +91,7 @@ def render(task, mark=None, colorizer=shell_color, digits=1):
     return ' '.join((
         colorizer('gray', '{padding}{symbol}#{num}'),
         colorizer(color, '{status}'),
+    ) + (('{completed:.10}', ) if task['status'] == DONE else tuple()) + (
         colorizer('white', '{title}'),
     )).format(padding=padding, symbol=symbol, color=color, **task)
 
