@@ -1,5 +1,6 @@
 import json
 from itertools import chain
+from math import ceil, log
 
 IN_PROGRESS = 'in-progress'
 TODO = 'todo'
@@ -71,7 +72,7 @@ def shell_color(color, text):
     return '\033[{code}m{text}\033[0m'.format(code=code, text=text)
 
 
-def render(task, mark=None, colorizer=shell_color):
+def render(task, mark=None, colorizer=shell_color, digits=1):
     color = {
         'todo': 'blue',
         'in-progress': 'yellow',
@@ -85,14 +86,18 @@ def render(task, mark=None, colorizer=shell_color):
     else:
         symbol = ' '
 
+    padding = ' ' * max(0, digits - len(str(task['num'])) - len(symbol))
+
     return ' '.join((
-        colorizer('gray', '{symbol}#{num}'),
+        colorizer('gray', '{padding}{symbol}#{num}'),
         colorizer(color, '{status}'),
         colorizer('white', '{title}'),
-    )).format(symbol=symbol, color=color, **task)
+    )).format(padding=padding, symbol=symbol, color=color, **task)
 
 
 def render_list(tasks, selected, colorizer=shell_color):
+    tasks = list(tasks)
+    pad = int(ceil(log(greatest_num(tasks))))
     return '\n'.join(
-        render(task, task['num'] == selected, colorizer) for task in tasks
+        render(task, task['num'] == selected, colorizer, pad) for task in tasks
     )
