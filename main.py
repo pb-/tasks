@@ -30,7 +30,8 @@ def run():
     configure_readline()
 
     while True:
-        if state['selected'] is None:
+        selected = tasks.find(state['tasks'], state['selected'])
+        if not selected or selected['status'] != tasks.IN_PROGRESS:
             state = reducers.root(state, actions.select_next(state['tasks']))
         try:
             input_ = raw_input(prompt(state))

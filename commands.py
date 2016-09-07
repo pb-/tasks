@@ -79,9 +79,6 @@ def done(state, args):
     state = reducers.root(state, actions.complete(
         args.num or state['selected'], utils.now()
     ))
-    state = reducers.root(state, actions.select_next(
-        state['tasks']
-    ))
     return state
 
 
