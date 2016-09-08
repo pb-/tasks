@@ -90,6 +90,14 @@ def all(state, args):
     return state
 
 
+@register('standup', help='list all tasks for standup')
+def standup(state, args):
+    print(tasks.render_list(
+        tasks.iter_standup(state['tasks']), state['selected'])
+    )
+    return state
+
+
 @register('backlog', 'bl', help='list todo and in-progress tasks')
 def backlog(state, args):
     print(tasks.render_list(tasks.iter_backlog(

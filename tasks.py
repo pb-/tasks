@@ -24,6 +24,13 @@ def iter_all(tasks):
     )
 
 
+def iter_standup(tasks):
+    return chain(
+        reversed(list(iter_status(tasks, DONE))),
+        iter_backlog(tasks),
+    )
+
+
 def find(tasks, num):
     try:
         return next(task for task in tasks if task['num'] == num)
