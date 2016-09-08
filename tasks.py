@@ -85,7 +85,7 @@ def render(task, mark=None, colorizer=shell_color, digits=1):
     else:
         symbol = ' '
 
-    padding = ' ' * max(0, digits - len(str(task['num'])) - len(symbol))
+    padding = ' ' * max(0, digits - len(str(task['num'])))
 
     return ' '.join((
         colorizer('gray', '{padding}{symbol}#{num}'),
