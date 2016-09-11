@@ -1,61 +1,44 @@
 import os
 import re
-from argparse import ArgumentParser
 from functools import partial
 
 from . import actions, reducers, tasks, utils
+from .parser import ParseError, option, parse, positional, remainder
 
-
-class ParseError(Exception):
-    pass
-
-
-class CommandParser(ArgumentParser):
-    def error(self, message):
-        raise ParseError(message)
-
-
-_parser = CommandParser(prog='', add_help=False)
-_subparsers = _parser.add_subparsers(dest='command')
+_commands = []
 
 
 def evaluate(input_, state):
+
     try:
-        args = _parser.parse_args(input_.split(' '))
-        return args.func(state, args)
+        return parse(input_, _commands, state)
     except ParseError as e:
         print(e)
         return state
 
 
-# the word 'argument' has multiple meanings in this function, unfortunately
-# (Python functon argument as in arg/kwarg and argument as in argument for the
-# argument parser.)
-def register(*aliases, **kwargs):
-    def wrapper(aliases, kwargs, function):
-        arguments = kwargs.pop('args') if 'args' in kwargs else []
-        for command in aliases:
-            parser = _subparsers.add_parser(command, **kwargs)
-            for arg_args, arg_kwargs in arguments:
-                parser.add_argument(*arg_args, **arg_kwargs)
-            parser.set_defaults(func=function)
+def register(name, help_=None, aliases=[], arguments=[]):
+    def wrapper(name, help_, aliases, arguments, function):
+        _commands.append({
+            'name': name,
+            'help': help_,
+            'function': function,
+            'aliases': aliases,
+            'arguments': arguments,
+        })
         return function
-    return partial(wrapper, aliases, kwargs)
+    return partial(wrapper, name, help_, aliases, arguments)
 
 
-def arg(*args, **kwargs):
-    return args, kwargs
-
-
-@register('add', 'a', help='add a new task', args=(
-    arg('title', nargs='+', metavar='TITLE'),
-    arg('-s', '--start', action='store_true'),
+@register('add', help_='add a new task', aliases=['a'], arguments=(
+    option('--start', '-s'),
+    remainder('title'),
 ))
-def add(state, args):
+def add(args, state):
     num = tasks.greatest_num(state['tasks']) + 1
-    action = actions.create(num, ' '.join(args.title), utils.now())
+    action = actions.create(num, args['title'], utils.now())
     state = reducers.dispatch(state, action)
-    if args.start:
+    if args['start']:
         state = reducers.dispatch(
             state, actions.start(action['num'], utils.now())
         )
@@ -64,50 +47,51 @@ def add(state, args):
     return state
 
 
-@register('start', help='start a task', args=(
-    arg('num', nargs='?', type=int),
+@register('start', help_='start a task', arguments=(
+    positional('num', type_=int, required=False),
 ))
-def start(state, args):
+def start(args, state):
     state = reducers.dispatch(state, actions.start(
-        args.num or state['selected'], utils.now()
+        args['num'] or state['selected'], utils.now()
     ))
     return state
 
 
-@register('done', 'complete', help='mark a task as completed', args=(
-    arg('num', nargs='?', type=int),
+@register('done', help_='mark a task as completed', aliases=['complete'],
+          arguments=(
+    positional('num', type_=int, required=False),
 ))
-def done(state, args):
+def done(args, state):
     state = reducers.dispatch(state, actions.complete(
-        args.num or state['selected'], utils.now()
+        args['num'] or state['selected'], utils.now()
     ))
     return state
 
 
-@register('list', 'all', help='list all tasks, including completed')
-def all(state, args):
+@register('list', help_='list all tasks, including completed', aliases=['all'])
+def all(args, state):
     print(tasks.render_list(tasks.iter_all(state['tasks']), state['selected']))
     return state
 
 
-@register('standup', help='list all tasks for standup')
-def standup(state, args):
+@register('standup', help_='list all tasks for standup')
+def standup(args, state):
     print(tasks.render_list(
         tasks.iter_standup(state['tasks']), state['selected'])
     )
     return state
 
 
-@register('backlog', 'bl', help='list todo and in-progress tasks')
-def backlog(state, args):
+@register('backlog', help_='list todo and in-progress tasks', aliases=['bl'])
+def backlog(args, state):
     print(tasks.render_list(tasks.iter_backlog(
         state['tasks']), state['selected']
     ))
     return state
 
 
-@register('status', help='show currently selected task')
-def status(state, args):
+@register('status', help_='show currently selected task')
+def status(args, state):
     task = tasks.find(state['tasks'], state['selected'])
     if task:
         print('Currently selected ' + tasks.render(task, mark=None))
@@ -117,14 +101,17 @@ def status(state, args):
     return state
 
 
-@register('help', help='show this help')
-def help(state, args):
-    _parser.print_help()
+@register('help', help_='show this help')
+def help(args, state):
+    for command in _commands:
+        print('  {name:10} {help}'.format(**command))
+    print('')
+    print('Type help COMMAND for detailed help')
     return state
 
 
-@register('order', help='re-order todo items')
-def order(state, args):
+@register('order', help_='re-order todo items')
+def order(args, state):
     path = os.path.join('/tmp', 'tasks.{}.edit'.format(os.getpid()))
     open(path, 'w').write(tasks.render_list(
         tasks.iter_backlog(state['tasks']), None, lambda _, text: text))
@@ -143,11 +130,11 @@ def order(state, args):
     return reducers.dispatch(state, actions.order(order))
 
 
-@register('edit', help='change item title', args=(
-    arg('num', nargs='?', type=int),
+@register('edit', help_='change item title', arguments=(
+    positional('num', type_=int, required=False),
 ))
-def edit(state, args):
-    task = tasks.find(state['tasks'], args.num or state['selected'])
+def edit(args, state):
+    task = tasks.find(state['tasks'], args['num'] or state['selected'])
     path = os.path.join('/tmp', 'tasks.{}.edit'.format(os.getpid()))
 
     open(path, 'w').write(task['title'])
@@ -157,10 +144,10 @@ def edit(state, args):
     os.remove(path)
 
     return reducers.dispatch(state, actions.edit(
-        args.num or state['selected'], title))
+        args['num'] or state['selected'], title))
 
 
-@register('clear', help='clear screen')
-def clear(state, args):
+@register('clear', help_='clear screen')
+def clear(args, state):
     os.system('clear')
     return state

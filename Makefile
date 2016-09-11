@@ -1,3 +1,3 @@
 check:
-	@flake8 *.py
-	@isort --check -q *.py
+	@flake8 *.py tests/*.py
+	@isort --check -q *.py tests/*.py
