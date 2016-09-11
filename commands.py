@@ -32,6 +32,7 @@ def register(name, help_=None, aliases=[], arguments=[]):
 
 @register('add', help_='add a new task', aliases=['a'], arguments=(
     option('--start', '-s'),
+    option('--done', '-d'),
     remainder('title'),
 ))
 def add(args, state):
@@ -43,6 +44,10 @@ def add(args, state):
             state, actions.start(action['num'], utils.now())
         )
         state = reducers.dispatch(state, actions.select(action['num']))
+    if args['done']:
+        state = reducers.dispatch(
+            state, actions.complete(action['num'], utils.now())
+        )
 
     return state
 
