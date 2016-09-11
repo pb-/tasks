@@ -80,9 +80,9 @@ def shell_color(color, text):
 
 def render(task, mark=None, colorizer=shell_color, digits=1):
     color = {
-        'todo': 'blue',
-        'in-progress': 'yellow',
-        'done': 'green',
+        TODO: 'blue',
+        IN_PROGRESS: 'yellow',
+        DONE: 'green',
     }.get(task['status'], 'gray')
 
     if mark is None:
