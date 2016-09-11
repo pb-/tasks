@@ -4,6 +4,7 @@ from itertools import chain
 IN_PROGRESS = 'in-progress'
 TODO = 'todo'
 DONE = 'done'
+DELETED = 'deleted'
 
 
 def iter_status(tasks, status):
@@ -13,14 +14,15 @@ def iter_status(tasks, status):
 def iter_backlog(tasks):
     return chain(
         iter_status(tasks, IN_PROGRESS),
-        iter_status(tasks, TODO)
+        iter_status(tasks, TODO),
     )
 
 
 def iter_all(tasks):
     return chain(
         iter_backlog(tasks),
-        iter_status(tasks, DONE)
+        iter_status(tasks, DONE),
+        iter_status(tasks, DELETED),
     )
 
 
@@ -73,6 +75,7 @@ def shell_color(color, text):
         'green': '1;32',
         'white': '0;37',
         'gray': '1;30',
+        'normal': '0',
     }.get(color)
 
     return '\033[{code}m{text}\033[0m'.format(code=code, text=text)
@@ -83,6 +86,7 @@ def render(task, mark=None, colorizer=shell_color, digits=1):
         TODO: 'blue',
         IN_PROGRESS: 'yellow',
         DONE: 'green',
+        DELETED: 'normal',
     }.get(task['status'], 'gray')
 
     if mark is None:

@@ -8,6 +8,7 @@ SELECT = 5
 ORDER = 6
 BUMP = 7
 EDIT = 8
+DELETE = 9
 
 
 def select(num):
@@ -44,3 +45,7 @@ def order(order):
 
 def edit(num, title):
     return dict(type=EDIT, num=num, title=title)
+
+
+def delete(num, dt):
+    return dict(type=DELETE, num=num, deleted=dt)

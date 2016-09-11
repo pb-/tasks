@@ -156,3 +156,13 @@ def edit(args, state):
 def clear(args, state):
     os.system('clear')
     return state
+
+
+@register('delete', help_='delete a task', arguments=(
+    positional('num', type_=int, required=False),
+))
+def delete(args, state):
+    state = reducers.dispatch(state, actions.delete(
+        args['num'] or state['selected'], utils.now()
+    ))
+    return state
