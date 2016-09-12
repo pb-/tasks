@@ -8,6 +8,10 @@ from .parser import ParseError, option, parse, positional, remainder
 _commands = []
 
 
+class Undo(Exception):
+    pass
+
+
 def evaluate(input_, state):
 
     try:
@@ -166,3 +170,8 @@ def delete(args, state):
         args['num'] or state['selected'], utils.now()
     ))
     return state
+
+
+@register('undo', help_='undo last command')
+def undo(args, state):
+    raise Undo

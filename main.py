@@ -38,6 +38,7 @@ def run(tasks_file):
     print_banner()
     state = dict(selected=None, tasks=tasks.load(tasks_file))
     previously_selected = None
+    previous_states = []
 
     configure_readline()
 
@@ -51,9 +52,15 @@ def run(tasks_file):
         try:
             previously_selected = notify_switch(previously_selected, state)
             input_ = raw_input(prompt(state))
-            state = commands.evaluate(input_, state)
-            if state is None:
+            new_state = commands.evaluate(input_, state)
+            if new_state is None:
                 raise Exception('command returned None state')
+            if new_state != state:
+                previous_states.append(state)
+            state = new_state
+        except commands.Undo:
+            if previous_states:
+                state = previous_states.pop()
         except EOFError:
             print('')
             break
