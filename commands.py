@@ -21,20 +21,24 @@ def evaluate(input_, state):
         return state
 
 
-def register(name, aliases=[], arguments=[]):
-    def wrapper(name, aliases, arguments, function):
+def register(*args, **kwargs):
+    def wrapper(aliases, arguments, function):
         _commands.append({
-            'name': name,
+            'name': function.__name__,
             'help': function.__doc__,
             'function': function,
             'aliases': aliases,
             'arguments': arguments,
         })
         return function
-    return partial(wrapper, name, aliases, arguments)
+
+    if len(args) == 1 and callable(args[0]):
+        wrapper([], [], args[0])
+    else:
+        return partial(wrapper, args, kwargs.get('arguments', []))
 
 
-@register('add', aliases=['a'], arguments=(
+@register('a', arguments=(
     option('--start', '-s'),
     option('--done', '-d'),
     remainder('title'),
@@ -57,7 +61,7 @@ def add(args, state):
     return state
 
 
-@register('start', arguments=(
+@register(arguments=(
     positional('num', type_=int, required=False),
 ))
 def start(args, state):
@@ -68,7 +72,7 @@ def start(args, state):
     return state
 
 
-@register('done', aliases=['complete'], arguments=(
+@register('complete', arguments=(
     positional('num', type_=int, required=False),
 ))
 def done(args, state):
@@ -79,14 +83,14 @@ def done(args, state):
     return state
 
 
-@register('list', aliases=['all'])
+@register('list')
 def all(args, state):
     """List all tasks, including completed and deleted."""
     print(tasks.render_list(tasks.iter_all(state['tasks']), state['selected']))
     return state
 
 
-@register('standup')
+@register
 def standup(args, state):
     """List tasks in a format suitable for standup."""
     print(tasks.render_list(
@@ -95,7 +99,7 @@ def standup(args, state):
     return state
 
 
-@register('backlog', aliases=['bl'])
+@register('bl')
 def backlog(args, state):
     """List todo and in-progress tasks."""
     print(tasks.render_list(tasks.iter_backlog(
@@ -104,7 +108,7 @@ def backlog(args, state):
     return state
 
 
-@register('status')
+@register
 def status(args, state):
     """Show the currently selected task."""
     task = tasks.find(state['tasks'], state['selected'])
@@ -116,7 +120,8 @@ def status(args, state):
     return state
 
 
-@register('help')
+# overwrites builtin help, but that should be ok
+@register
 def help(args, state):
     """Get help."""
     for command in _commands:
@@ -126,7 +131,7 @@ def help(args, state):
     return state
 
 
-@register('order')
+@register
 def order(args, state):
     """Re-order todo items in an external editor."""
     path = os.path.join('/tmp', 'tasks.{}.edit'.format(os.getpid()))
@@ -147,7 +152,7 @@ def order(args, state):
     return reducers.dispatch(state, actions.order(order))
 
 
-@register('edit', arguments=(
+@register(arguments=(
     positional('num', type_=int, required=False),
 ))
 def edit(args, state):
@@ -165,14 +170,14 @@ def edit(args, state):
         args['num'] or state['selected'], title))
 
 
-@register('clear')
+@register
 def clear(args, state):
     """Clear screen."""
     os.system('clear')
     return state
 
 
-@register('delete', arguments=(
+@register(arguments=(
     positional('num', type_=int, required=False),
 ))
 def delete(args, state):
@@ -183,7 +188,7 @@ def delete(args, state):
     return state
 
 
-@register('undo')
+@register
 def undo(args, state):
     """Undo last command."""
     raise Undo
