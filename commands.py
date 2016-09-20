@@ -121,13 +121,25 @@ def status(args, state):
 
 
 # overwrites builtin help, but that should be ok
-@register
+@register(arguments=(
+    positional('command', required=False),
+))
 def help(args, state):
     """Get help."""
-    for command in _commands:
-        print('  {name:10} {help}'.format(**command))
-    print('')
-    print('Type help COMMAND for detailed help')
+
+    if args['command']:
+        try:
+            cmd = next(c for c in _commands if c['name'] == args['command'])
+            print('  {}'.format(cmd['name']))
+            pass
+        except StopIteration:
+            print('No such command')
+    else:
+        print('')
+        for command in _commands:
+            print('  {name:10} {help}'.format(**command))
+        print('')
+        print('Type help COMMAND for detailed help')
     return state
 
 
@@ -181,7 +193,7 @@ def clear(args, state):
     positional('num', type_=int, required=False),
 ))
 def delete(args, state):
-    """Delete a task (mark as deletec)."""
+    """Delete a task (mark as deleted)."""
     state = reducers.dispatch(state, actions.delete(
         args['num'] or state['selected'], utils.now()
     ))

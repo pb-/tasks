@@ -5,14 +5,7 @@ class ParseError(Exception):
     pass
 
 
-def syntax_element(function):
-    def f(func, *args, **kwargs):
-        return partial(func, *args, **kwargs)
-    return partial(f, function)
-
-
-@syntax_element
-def option(long_name, short_name, parsed, unparsed, noparse):
+def parse_option(long_name, short_name, parsed, unparsed, noparse):
     name = long_name[2:]
     try:
         index = next(
@@ -25,14 +18,20 @@ def option(long_name, short_name, parsed, unparsed, noparse):
         return parsed + [(name, False)], unparsed, noparse
 
 
-@syntax_element
-def remainder(name, parsed, unparsed, noparse):
+def option(long_name, short_name, help=None):
+    return dict(function=parse_option, args=(long_name, short_name), help=help)
+
+
+def parse_remainder(name, parsed, unparsed, noparse):
     return parsed + [(name, ' '.join(unparsed + noparse))], [], []
 
 
-@syntax_element
-def positional(name, parsed, unparsed, noparse,
-               type_=str, default=None, required=True):
+def remainder(name, help=None):
+    return dict(function=parse_remainder, args=(name, ), help=help)
+
+
+def parse_positional(name, type_, default, required,
+                     parsed, unparsed, noparse):
     if required and default:
         raise ParseError('Argument {} is required and has default'.format(
             name))
@@ -55,6 +54,12 @@ def positional(name, parsed, unparsed, noparse,
             return parsed + [(name, default)], [], noparse
 
 
+def positional(name, type_=str, default=None, required=True, help=None):
+    return dict(
+        function=parse_positional, args=(name, type_, default, required),
+        help=help)
+
+
 def _split_args(args):
     try:
         index = next(i for i, arg in enumerate(args) if arg == '--')
@@ -68,7 +73,8 @@ def _parse_args(args, syntax):
     unparsed, noparse = _split_args(args)
 
     for token in syntax:
-        parsed, unparsed, noparse = token(parsed, unparsed, noparse)
+        func = partial(token['function'], *token['args'])
+        parsed, unparsed, noparse = func(parsed, unparsed, noparse)
 
     if unparsed or noparse:
         raise ParseError('Extra arguments: {}'.format(
