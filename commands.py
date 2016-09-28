@@ -58,6 +58,7 @@ def add(args, state):
             state, actions.complete(action['num'], utils.now())
         )
 
+    print('Added ' + tasks.render(tasks.find(state['tasks'], num)))
     return state
 
 
