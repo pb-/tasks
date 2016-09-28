@@ -1,5 +1,5 @@
 from . import actions
-from .tasks import DELETED, DONE, IN_PROGRESS, TODO
+from .tasks import BLOCKED, DELETED, DONE, IN_PROGRESS, TODO
 from .utils import separate
 
 
@@ -26,6 +26,11 @@ def task(state, action):
             update = [
                 ('status', DELETED),
                 ('deleted', action['deleted']),
+            ]
+        elif action['type'] == actions.BLOCK:
+            update = [
+                ('status', BLOCKED),
+                ('blocked', action['blocked']),
             ]
         elif action['type'] == actions.STOP:
             update = [

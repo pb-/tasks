@@ -5,6 +5,7 @@ IN_PROGRESS = 'in-progress'
 TODO = 'todo'
 DONE = 'done'
 DELETED = 'deleted'
+BLOCKED = 'blocked'
 
 
 def iter_status(tasks, status):
@@ -30,6 +31,7 @@ def iter_standup(tasks):
     return chain(
         reversed(list(iter_status(tasks, DONE))),
         iter_backlog(tasks),
+        iter_status(tasks, BLOCKED),
     )
 
 
@@ -71,11 +73,12 @@ def dump(file_name, tasks):
 def shell_color(color, text):
     code = {
         'blue': '1;34',
-        'yellow': '1;33',
-        'green': '1;32',
-        'white': '0;37',
         'gray': '1;30',
+        'green': '1;32',
         'normal': '0',
+        'red': '1;31',
+        'white': '0;37',
+        'yellow': '1;33',
     }.get(color)
 
     return '\033[{code}m{text}\033[0m'.format(code=code, text=text)
@@ -87,6 +90,7 @@ def render(task, mark=None, colorizer=shell_color, digits=1):
         IN_PROGRESS: 'yellow',
         DONE: 'green',
         DELETED: 'normal',
+        BLOCKED: 'red',
     }.get(task['status'], 'gray')
 
     if mark is None:

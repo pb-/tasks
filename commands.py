@@ -84,6 +84,17 @@ def done(args, state):
     return state
 
 
+@register(arguments=(
+    positional('num', type_=int, required=False),
+))
+def block(args, state):
+    """Mark a task as blocked."""
+    state = reducers.dispatch(state, actions.block(
+        args['num'] or state['selected'], utils.now()
+    ))
+    return state
+
+
 @register('list')
 def all(args, state):
     """List all tasks, including completed and deleted."""

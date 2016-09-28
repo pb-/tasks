@@ -9,6 +9,7 @@ ORDER = 6
 BUMP = 7
 EDIT = 8
 DELETE = 9
+BLOCK = 10
 
 
 def select(num):
@@ -33,6 +34,10 @@ def start(num, dt):
 
 def stop(num):
     return dict(type=STOP, num=num), bump(num)
+
+
+def block(num, dt):
+    return dict(type=BLOCK, num=num, blocked=dt)
 
 
 def complete(num, dt):
