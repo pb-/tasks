@@ -1,7 +1,7 @@
 import os
 import readline
 import sys
-
+from datetime import datetime, timedelta
 from textwrap import dedent
 
 from . import actions, commands, reducers, tasks, utils
@@ -39,6 +39,7 @@ def run(tasks_file):
     state = dict(selected=None, tasks=tasks.load(tasks_file))
     previously_selected = None
     previous_states = []
+    last_save = datetime.now()
 
     configure_readline()
 
@@ -57,6 +58,9 @@ def run(tasks_file):
                 raise Exception('command returned None state')
             if new_state != state:
                 previous_states.append(state)
+                if datetime.now() - last_save > timedelta(minutes=15):
+                    last_save = datetime.now()
+                    tasks.dump(tasks_file, new_state['tasks'])
             state = new_state
         except commands.Undo:
             if previous_states:
