@@ -3,6 +3,8 @@ INITIALIZED = 'initialized'
 
 ITEM_ADDED = 'item-added'
 ITEM_STATUS_CHANGED = 'item-status-changed'
+ITEM_ORDER_EDITED = 'item-order-edited'
+ITEMS_REORDERED = 'items-reordered'
 
 STATUS_TODO = 'todo'
 STATUS_PROGRESS = 'progress'
@@ -40,4 +42,18 @@ def item_status_changed(num, status):
         'type': ITEM_STATUS_CHANGED,
         'num': num,
         'status': status,
+    }
+
+
+def item_order_edited(content):
+    return {
+        'type': ITEM_ORDER_EDITED,
+        'content': content,
+    }
+
+
+def items_reordered(nums):
+    return {
+        'type': ITEMS_REORDERED,
+        'nums': nums,
     }

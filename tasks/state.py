@@ -1,3 +1,4 @@
+import re
 from itertools import chain
 
 from . import commands, events
@@ -83,6 +84,39 @@ def _next_selection(state, num, status):
     return _next_backlog_num(state['items'])
 
 
+@update.register(events.ITEM_ORDER_EDITED)
+def _update_order_edited(state, event, time):
+    match = re.compile(r'^\s*#(?P<num>\d+)').match
+    lines = event['content'].strip().split('\n')
+    nums = [int(match(line).group('num')) for line in lines if match(line)]
+
+    if not all(_find(state['items'], num) for num in nums):
+        return state, []
+
+    return state, [commands.store(events.items_reordered(nums))]
+
+
+@update.register(events.ITEMS_REORDERED)
+def _update_reordered(state, event, time):
+    ordered = [
+        i for num in event['nums'] for i in state['items'] if i['num'] == num]
+    rest = [i for i in state['items'] if i['num'] not in event['nums']]
+
+    with_items = {
+        **state,
+        'items': ordered + rest,
+    }
+
+    with_selected = {
+        **with_items,
+        'selected': _next_backlog_num(state['items']),
+    }
+
+    return with_selected, [
+        commands.println('order updated'),
+        *_notify_change(state, with_selected)]
+
+
 @update.register(events.INPUT_READ)
 def _update_input(state, event, time):
     parts = event['input'].strip().split(' ', 1)
@@ -144,6 +178,15 @@ def _list(state, iterator):
 
 def _item_len(state, item):
     return len(str(item['num'])) + int(item['num'] == state['selected'])
+
+
+@_parse.register('order')
+def _parse_order(state, _, args, time):
+    content = ''.join(
+        '#{} {}\n'.format(item['num'], item['text'])
+        for item in _iter_status(state['items'], events.STATUS_TODO))
+
+    return state, [commands.editor(content, events.item_order_edited)]
 
 
 @_parse.register('s')

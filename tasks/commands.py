@@ -23,3 +23,11 @@ def store(event):
         'type': STORE,
         'event': event,
     }
+
+
+def editor(content, edited_func):
+    return {
+        'type': EDITOR,
+        'content': content,
+        'edited_func': edited_func,
+    }

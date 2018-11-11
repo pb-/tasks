@@ -69,3 +69,19 @@ def _handle_store(event_handler, state, command):
         f.write('\n')
 
     return event_handler(state, command['event'])
+
+
+@_handle_command.register(commands.EDITOR)
+def _handle_editor(event_handler, state, command):
+    path = os.path.join('/tmp', 'tasks.{}.edit'.format(os.getpid()))
+
+    open(path, 'w').write(command['content'])
+    os.system('editor {}'.format(path))
+    edited = open(path).read()
+
+    os.remove(path)
+
+    if edited != command['content']:
+        return event_handler(state, command['edited_func'](edited))
+
+    return state
