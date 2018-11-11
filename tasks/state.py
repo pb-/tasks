@@ -128,8 +128,22 @@ def _parse_all(state, _, args, time):
 
 
 def _list(state, iterator):
-    return state, map(
-        commands.println, map(_fmt_item, iterator(state['items'])))
+    items = list(iterator(state['items']))
+    if not items:
+        return state, []
+
+    max_len = max(_item_len(state, item) for item in items)
+
+    return state, [
+        commands.println('{}{}{}'.format(
+            ' ' * (max_len - _item_len(state, item)),
+            '*' if item['num'] == state['selected'] else '', _fmt_item(item)))
+        for item in items
+    ]
+
+
+def _item_len(state, item):
+    return len(str(item['num'])) + int(item['num'] == state['selected'])
 
 
 @_parse.register('s')
