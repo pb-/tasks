@@ -2,3 +2,4 @@
 .cache
 .env
 tests/.cache
+tasks.egg-info
