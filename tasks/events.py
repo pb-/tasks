@@ -20,9 +20,11 @@ def input_read(input_):
 def item_added(num, text, status=STATUS_TODO):
     return {
         'type': ITEM_ADDED,
-        'num': num,
-        'text': text,
-        'status': status,
+        'item': {
+            'num': num,
+            'text': text,
+            'status': status,
+        },
     }
 
 
