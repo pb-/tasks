@@ -3,6 +3,12 @@ INITIALIZED = 'initialized'
 
 ITEM_ADDED = 'item-added'
 
+STATUS_TODO = 'todo'
+STATUS_PROGRESS = 'progress'
+STATUS_BLOCKED = 'blocked'
+STATUS_DONE = 'done'
+STATUS_DELETED = 'deleted'
+
 
 def input_read(input_):
     return {
@@ -11,11 +17,12 @@ def input_read(input_):
     }
 
 
-def item_added(num, text):
+def item_added(num, text, status=STATUS_TODO):
     return {
         'type': ITEM_ADDED,
         'num': num,
         'text': text,
+        'status': status,
     }
 
 

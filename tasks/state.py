@@ -6,6 +6,7 @@ def initial_state():
     return {
         'items': [],
         'selected': 0,
+        'last_num': 0,
     }
 
 
@@ -24,7 +25,6 @@ def update(state, event, time):
 @update.register(events.INITIALIZED)
 def _update_initialized(state, event, time):
     return state, [commands.println([
-        '',
         'Welcome to tasks',
         'type help for help, exit with ^D or ^C',
     ])]
@@ -36,7 +36,7 @@ def _update_input(state, event, time):
     if parts[0] == 'add' and len(parts) > 1:
         return state, [
             commands.println('added {}'.format(parts[1])),
-            commands.store(events.item_added(1, parts[1])),
+            commands.store(events.item_added(1 + state['last_num'], parts[1])),
         ]
 
 
@@ -51,4 +51,5 @@ def _update_item_added(state, event, time):
             'num': event['num'],
             'text': event['text'],
         }],
+        'last_num': event['num']
     }, []

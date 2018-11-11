@@ -1,4 +1,5 @@
 import os
+import readline
 from functools import partial
 from time import time as now
 from json import dump, loads
