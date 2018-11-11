@@ -15,7 +15,8 @@ def initial_state():
 
 def render(state):
     if state['selected']:
-        return '#{}>'.format(state['selected'])
+        item = _find(state['items'], state['selected'])
+        return '#{}({})>'.format(state['selected'], item['status'][0])
     else:
         return '>'
 
@@ -86,6 +87,16 @@ def _parse_add(state, _, args, time):
         commands.println('added {}'.format(_fmt_item(event['item']))),
         commands.store(event),
     ]
+
+
+@_parse.register('st')
+@_parse.register('status')
+def _parse_status(state, _, args, time):
+    if not state['selected']:
+        return state, [commands.println('no item selected')]
+
+    return state, [commands.println('currently on {}'.format(
+        _fmt_item(_find(state['items'], state['selected']))))]
 
 
 @_parse.register('bl')
