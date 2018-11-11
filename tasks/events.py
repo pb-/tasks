@@ -2,6 +2,10 @@ INPUT_READ = 'input-read'
 INITIALIZED = 'initialized'
 
 ITEM_ADDED = 'item-added'
+ITEM_STARTED = 'item-started'
+ITEM_DONE = 'item-done'
+ITEM_BLOCKED = 'item-blocked'
+ITEM_DELETED = 'item-deleted'
 
 STATUS_TODO = 'todo'
 STATUS_PROGRESS = 'progress'
@@ -17,6 +21,12 @@ def input_read(input_):
     }
 
 
+def initialized():
+    return {
+        'type': INITIALIZED,
+    }
+
+
 def item_added(num, text, status=STATUS_TODO):
     return {
         'type': ITEM_ADDED,
@@ -28,7 +38,29 @@ def item_added(num, text, status=STATUS_TODO):
     }
 
 
-def initialized():
+def item_started(num):
     return {
-        'type': INITIALIZED,
+        'type': ITEM_STARTED,
+        'num': num,
+    }
+
+
+def item_done(num):
+    return {
+        'type': ITEM_DONE,
+        'num': num,
+    }
+
+
+def item_blocked(num):
+    return {
+        'type': ITEM_BLOCKED,
+        'num': num,
+    }
+
+
+def item_deleted(num):
+    return {
+        'type': ITEM_DELETED,
+        'num': num,
     }

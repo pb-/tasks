@@ -67,7 +67,3 @@ def _handle_store(event_handler, state, command):
         f.write('\n')
 
     return event_handler(state, command['event'])
-
-
-if __name__ == '__main__':
-    main()
