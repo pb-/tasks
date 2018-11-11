@@ -44,27 +44,10 @@ def _update_item_added(state, event, time):
     return s, _notify_change(state, s)
 
 
-@update.register(events.ITEM_STARTED)
-def _update_item_started(state, event, time):
-    return _update_status(state, event['num'], events.STATUS_PROGRESS)
-
-
-@update.register(events.ITEM_DONE)
-def _update_item_done(state, event, time):
-    return _update_status(state, event['num'], events.STATUS_DONE)
-
-
-@update.register(events.ITEM_DELETED)
-def _update_item_done(state, event, time):
-    return _update_status(state, event['num'], events.STATUS_DELETED)
-
-
-@update.register(events.ITEM_BLOCKED)
-def _update_item_done(state, event, time):
-    return _update_status(state, event['num'], events.STATUS_BLOCKED)
-
-
-def _update_status(state, num, status):
+@update.register(events.ITEM_STATUS_CHANGED)
+def _update_status_changed(state, event, time):
+    status = event['status']
+    num = event['num']
     items = [{
         **item,
         'status': status,
@@ -113,37 +96,27 @@ def _parse_backlog(state, _, args, time):
 
 @_parse.register('s')
 @_parse.register('start')
-def _parse_start(state, _, args, time):
-    if not state['selected']:
-        return state, [commands.println('nothing to start')]
-
-    return state, [commands.store(events.item_started(state['selected']))]
-
-
 @_parse.register('d')
 @_parse.register('done')
-def _parse_done(state, _, args, time):
-    if not state['selected']:
-        return state, [commands.println('nothing to complete')]
-
-    return state, [commands.store(events.item_done(state['selected']))]
-
-
 @_parse.register('x')
 @_parse.register('delete')
-def _parse_done(state, _, args, time):
-    if not state['selected']:
-        return state, [commands.println('nothing to delete')]
-
-    return state, [commands.store(events.item_deleted(state['selected']))]
-
-
 @_parse.register('blocked')
-def _parse_done(state, _, args, time):
+def _parse_status(state, cmd, args, time):
     if not state['selected']:
-        return state, [commands.println('nothing to block')]
+        return state, [commands.println('no item selected')]
 
-    return state, [commands.store(events.item_blocked(state['selected']))]
+    status = {
+        's': events.STATUS_PROGRESS,
+        'start': events.STATUS_PROGRESS,
+        'd': events.STATUS_DONE,
+        'done': events.STATUS_DONE,
+        'x': events.STATUS_DELETED,
+        'delete': events.STATUS_DELETED,
+        'blocked': events.STATUS_BLOCKED,
+    }.get(cmd)
+
+    return state, [commands.store(events.item_status_changed(
+        state['selected'], status))]
 
 
 def _fmt_item(item):
