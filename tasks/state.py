@@ -55,15 +55,32 @@ def _update_status_changed(state, event, time):
         'status': status,
     } if item['num'] == num else item for item in state['items']]
 
-    s = {
+    with_items = {
         **state,
         'items': items,
-        'selected': (
-            num if status == events.STATUS_PROGRESS else _next_selection(items)
-        ),
     }
 
-    return s, _notify_change(state, s)
+    with_selected = {
+        **with_items,
+        'selected': _next_selection(with_items, num, status),
+    }
+
+    return with_selected, _notify_change(state, with_selected)
+
+
+def _next_selection(state, num, status):
+    """num has just moved to status, decide on next num."""
+    if status == events.STATUS_PROGRESS:
+        return num
+
+    if not state['selected']:
+        return _next_backlog_num(state['items'])
+
+    item = _find(state['items'], state['selected'])
+    if item['status'] == events.STATUS_PROGRESS:
+        return state['selected']
+
+    return _next_backlog_num(state['items'])
 
 
 @update.register(events.INPUT_READ)
@@ -123,7 +140,15 @@ def _list(state, iterator):
 @_parse.register('delete')
 @_parse.register('blocked')
 def _parse_status_change(state, cmd, args, time):
-    if not state['selected']:
+    num = _parse_num(args)
+    if args:
+        if not num:
+            return state, [commands.println('bad item num')]
+
+        if not _find(state['items'], num):
+            return state, [commands.println('bad item')]
+
+    if not num and not state['selected']:
         return state, [commands.println('no item selected')]
 
     status = {
@@ -137,7 +162,14 @@ def _parse_status_change(state, cmd, args, time):
     }.get(cmd)
 
     return state, [commands.store(events.item_status_changed(
-        state['selected'], status))]
+        num or state['selected'], status))]
+
+
+def _parse_num(s):
+    try:
+        return int(s)
+    except ValueError:
+        return None
 
 
 def _fmt_item(item, color=True):
@@ -153,7 +185,7 @@ def _fmt_item(item, color=True):
         item['num'], color, item['status'], escape(item['text']))
 
 
-def _next_selection(items):
+def _next_backlog_num(items):
     return next(_iter_backlog(items), {'num': 0})['num']
 
 
