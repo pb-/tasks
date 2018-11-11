@@ -122,7 +122,7 @@ def _list(state, iterator):
 @_parse.register('x')
 @_parse.register('delete')
 @_parse.register('blocked')
-def _parse_status(state, cmd, args, time):
+def _parse_status_change(state, cmd, args, time):
     if not state['selected']:
         return state, [commands.println('no item selected')]
 
