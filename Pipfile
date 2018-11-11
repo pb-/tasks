@@ -4,6 +4,8 @@ verify_ssl = true
 name = "pypi"
 
 [dev-packages]
+tasks = {path = ".", editable = true}
+"flake8" = "*"
 
 [packages]
 tasks = {path = ".", editable = true}

@@ -1,5 +1,5 @@
 import os
-import readline
+import readline  # noqa
 from functools import partial
 from time import time as now
 from json import dump, loads
@@ -7,6 +7,7 @@ from json import dump, loads
 from . import commands, events
 from .state import update, initial_state, render
 from .func import valuedispatch
+from .color import shell_color
 
 
 STORE = os.path.join(os.getenv('HOME'), '.tasks2.json')
@@ -55,7 +56,7 @@ def _handle_command(event_handler, command):
 @_handle_command.register(commands.PRINTLN)
 def _handle_println(event_handler, state, command):
     for line in command['lines']:
-        print(line)
+        print(shell_color(line))
 
     return state
 

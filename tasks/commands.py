@@ -3,6 +3,7 @@ PRINTLN = 'println'
 STORE = 'store'
 EDITOR = 'editor'
 
+
 def println(text):
     return {
         'type': PRINTLN,

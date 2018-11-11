@@ -2,6 +2,7 @@ from itertools import chain
 
 from . import commands, events
 from .func import valuedispatch
+from .color import escape
 
 
 def initial_state():
@@ -90,8 +91,17 @@ def _parse_add(state, _, args, time):
 @_parse.register('bl')
 @_parse.register('backlog')
 def _parse_backlog(state, _, args, time):
+    return _list(state, _iter_backlog)
+
+
+@_parse.register('all')
+def _parse_all(state, _, args, time):
+    return _list(state, _iter_all)
+
+
+def _list(state, iterator):
     return state, map(
-        commands.println, map(_fmt_item, _iter_backlog(state['items'])))
+        commands.println, map(_fmt_item, iterator(state['items'])))
 
 
 @_parse.register('s')
@@ -119,8 +129,17 @@ def _parse_status(state, cmd, args, time):
         state['selected'], status))]
 
 
-def _fmt_item(item):
-    return '#{} {} {}'.format(item['num'], item['status'], item['text'])
+def _fmt_item(item, color=True):
+    color = {
+        events.STATUS_TODO: 'blue',
+        events.STATUS_PROGRESS: 'yellow',
+        events.STATUS_DONE: 'green',
+        events.STATUS_BLOCKED: 'red',
+        events.STATUS_DELETED: 'normal',
+    }.get(item['status'])
+
+    return '[gray #{}] [{} {}] [white {}]'.format(
+        item['num'], color, item['status'], escape(item['text']))
 
 
 def _next_selection(items):
@@ -145,6 +164,15 @@ def _iter_backlog(items):
     return chain(
         _iter_status(items, events.STATUS_PROGRESS),
         _iter_status(items, events.STATUS_TODO),
+    )
+
+
+def _iter_all(items):
+    return chain(
+        _iter_backlog(items),
+        _iter_status(items, events.STATUS_BLOCKED),
+        _iter_status(items, events.STATUS_DONE),
+        _iter_status(items, events.STATUS_DELETED),
     )
 
 
