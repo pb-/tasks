@@ -10,7 +10,8 @@ from .func import valuedispatch
 from .color import shell_color
 
 
-STORE = os.path.join(os.getenv('HOME'), '.tasks2.json')
+STORE = os.getenv(
+    'TASKS_STORE', os.path.join(os.getenv('HOME'), '.tasks2.json'))
 
 
 def run():
