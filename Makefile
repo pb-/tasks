@@ -9,6 +9,10 @@ run:
 	pipenv run tasks
 .PHONY: run
 
+todo:
+	TASKS_STORE=TODO.json pipenv run tasks
+.PHONY: todo
+
 dev_install:
 	pipenv install --dev
-.PHONY:
+.PHONY: dev_install
