@@ -5,6 +5,8 @@ ITEM_ADDED = 'item-added'
 ITEM_STATUS_CHANGED = 'item-status-changed'
 ITEM_ORDER_EDITED = 'item-order-edited'
 ITEMS_REORDERED = 'items-reordered'
+ITEM_EDIT_REQUESTED = 'item-edit-requested'
+ITEM_EDITED = 'item-edited'
 
 STATUS_TODO = 'todo'
 STATUS_PROGRESS = 'progress'
@@ -56,4 +58,20 @@ def items_reordered(nums):
     return {
         'type': ITEMS_REORDERED,
         'nums': nums,
+    }
+
+
+def item_edit_requested(num, text):
+    return {
+        'type': ITEM_EDIT_REQUESTED,
+        'num': num,
+        'text': text,
+    }
+
+
+def item_edited(num, text):
+    return {
+        'type': ITEM_EDITED,
+        'num': num,
+        'text': text,
     }

@@ -101,6 +101,26 @@ def _update_reordered(state, event, time):
         *_notify_change(state, with_selected)]
 
 
+@update.register(events.ITEM_EDIT_REQUESTED)
+def _update_item_edit_requested(state, event, time):
+    text = event['text'].strip()
+    if not text:
+        return state, []
+
+    return state, [commands.store(events.item_edited(event['num'], text))]
+
+
+@update.register(events.ITEM_EDITED)
+def _update_item_edited(state, event, time):
+    return {
+        **state,
+        'items': [{
+            **item,
+            'text': event['text'],
+        } if item['num'] == event['num'] else item for item in state['items']],
+    }, [commands.println('item updated')]
+
+
 @update.register(events.INPUT_READ)
 def _update_input(state, event, time):
     return state, parse_input(state, event['input'].strip(), time)

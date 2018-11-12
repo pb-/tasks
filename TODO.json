@@ -31,3 +31,5 @@
 {"time": 1542058769.0040379, "type": "item-added", "item": {"num": 12, "text": "restructure code: separate update/parse/model", "status": "todo"}}
 {"time": 1542058773.7420986, "type": "item-status-changed", "num": 12, "status": "progress"}
 {"time": 1542059031.740633, "type": "item-status-changed", "num": 12, "status": "done"}
+{"time": 1542060909.2167604, "type": "item-status-changed", "num": 1, "status": "progress"}
+{"time": 1542061140.728271, "type": "item-status-changed", "num": 1, "status": "done"}

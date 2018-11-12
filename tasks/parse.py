@@ -22,6 +22,8 @@ def _parse_help(state, _, args, time):
     return [commands.println([
         '  add TEXT',
         '     add a new item in todo state',
+        '  edit [NUM]',
+        '     edit current item/NUM',
         '  status',
         '      display current item',
         '  backlog',
@@ -109,6 +111,18 @@ def _parse_order(state, _, args, time):
     return [commands.editor(content, events.item_order_edited)]
 
 
+@_parse.register('edit')
+def _parse_edit(state, _, args, time):
+    item, cmds = _get_item(state, args)
+    if not item:
+        return cmds
+
+    content = item['text'] + '\n'
+    num = item['num']
+
+    return [commands.editor(content, partial(events.item_edit_requested, num))]
+
+
 @_parse.register('s')
 @_parse.register('start')
 @_parse.register('d')
@@ -118,16 +132,9 @@ def _parse_order(state, _, args, time):
 @_parse.register('blocked')
 @_parse.register('todo')
 def _parse_status_change(state, cmd, args, time):
-    num = _parse_num(args)
-    if args:
-        if not num:
-            return [commands.println('bad item num')]
-
-        if not model.find(state['items'], num):
-            return [commands.println('bad item')]
-
-    if not num and not state['selected']:
-        return [commands.println('no item selected')]
+    item, cmds = _get_item(state, args)
+    if not item:
+        return cmds
 
     status = {
         's': events.STATUS_PROGRESS,
@@ -140,8 +147,22 @@ def _parse_status_change(state, cmd, args, time):
         'todo': events.STATUS_TODO,
     }.get(cmd)
 
-    return [commands.store(events.item_status_changed(
-        num or state['selected'], status))]
+    return [commands.store(events.item_status_changed(item['num'], status))]
+
+
+def _get_item(state, args):
+    num = _parse_num(args)
+    if args and not num:
+        return None, [commands.println('bad item num')]
+
+    if not num and not state['selected']:
+        return None, [commands.println('no item selected')]
+
+    item = model.find(state['items'], num or state['selected'])
+    if not item:
+        return None, [commands.println('bad item')]
+
+    return item, []
 
 
 def _parse_num(s):
