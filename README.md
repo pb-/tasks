@@ -12,6 +12,6 @@ make todo
 ## Production deployment
 
 ```
-pip install --upgrade .
+pip3 install --upgrade .
 tasks
 ```
