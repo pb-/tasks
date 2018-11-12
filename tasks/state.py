@@ -4,8 +4,8 @@ from functools import partial
 from itertools import chain
 
 from . import commands, events
-from .func import valuedispatch
 from .color import escape
+from .func import valuedispatch
 
 
 def initial_state():

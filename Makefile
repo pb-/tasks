@@ -3,7 +3,12 @@ all: lint
 
 lint:
 	pipenv run flake8 tasks
+	pipenv run isort -c
 .PHONY: lint
+
+autosort:
+	pipenv run isort -y
+.PHONY: autosort
 
 run:
 	pipenv run tasks

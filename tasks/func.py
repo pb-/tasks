@@ -1,8 +1,8 @@
 """
 Utility functions for functional concepts.
 """
-from functools import partial, wraps
 from collections import defaultdict
+from functools import partial, wraps
 
 
 def valuedispatch(valuegetter=lambda args, kwargs: args[0].get('type')):

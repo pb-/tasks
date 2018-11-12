@@ -1,14 +1,13 @@
 import os
 import readline  # noqa
 from functools import partial
-from time import time as now
 from json import dump, loads
+from time import time as now
 
 from . import commands, events
-from .state import update, initial_state, render
-from .func import valuedispatch
 from .color import shell_color
-
+from .func import valuedispatch
+from .state import initial_state, render, update
 
 STORE = os.getenv(
     'TASKS_STORE', os.path.join(os.getenv('HOME'), '.tasks.json'))
