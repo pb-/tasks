@@ -7,7 +7,8 @@ from time import time as now
 from . import commands, events
 from .color import shell_color
 from .func import valuedispatch
-from .state import initial_state, render, update
+from .model import initial_state, render
+from .update import update
 
 STORE = os.getenv(
     'TASKS_STORE', os.path.join(os.getenv('HOME'), '.tasks.json'))
