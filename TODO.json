@@ -1,0 +1,21 @@
+{"time": 1541975105.959181, "type": "item-added", "item": {"num": 1, "text": "implement editing items", "status": "todo"}}
+{"time": 1541975111.866938, "type": "item-added", "item": {"num": 2, "text": "implement ordering items", "status": "todo"}}
+{"time": 1541975138.6419833, "type": "item-added", "item": {"num": 3, "text": "implement editor command", "status": "todo"}}
+{"time": 1541975167.8222742, "type": "item-added", "item": {"num": 4, "text": "write help", "status": "todo"}}
+{"time": 1541975190.725841, "type": "item-added", "item": {"num": 5, "text": "implement standup command", "status": "todo"}}
+{"time": 1541975220.3216162, "type": "item-added", "item": {"num": 6, "text": "support non-interactive one-off command via CLI args", "status": "todo"}}
+{"time": 1541976100.2214613, "type": "item-added", "item": {"num": 7, "text": "implement undo", "status": "todo"}}
+{"time": 1541977782.615838, "type": "item-status-changed", "num": 3, "status": "progress"}
+{"time": 1541979544.0106308, "type": "item-status-changed", "num": 3, "status": "done"}
+{"time": 1541979565.7625625, "type": "items-reordered", "nums": [2, 1, 4, 5, 6, 7]}
+{"time": 1541979831.9742105, "type": "items-reordered", "nums": [2, 1, 5, 4, 6, 7]}
+{"time": 1541979843.5696738, "type": "items-reordered", "nums": [2, 1, 4, 5, 6, 7]}
+{"time": 1541979888.555943, "type": "item-status-changed", "num": 2, "status": "progress"}
+{"time": 1541979889.3914363, "type": "item-status-changed", "num": 2, "status": "done"}
+{"time": 1542051288.1814032, "type": "item-added", "item": {"num": 8, "text": "implement \"back to todo\" command", "status": "todo"}}
+{"time": 1542051305.6123967, "type": "item-added", "item": {"num": 9, "text": "make notification of change more general", "status": "todo"}}
+{"time": 1542051326.2920125, "type": "item-added", "item": {"num": 10, "text": "select after reorder", "status": "todo"}}
+{"time": 1542051374.4609656, "type": "items-reordered", "nums": [4, 1, 5, 6, 7, 8, 9, 10]}
+{"time": 1542051511.5747163, "type": "items-reordered", "nums": [5, 4, 1, 6, 7, 8, 9, 10]}
+{"time": 1542051568.5333025, "type": "item-status-changed", "num": 10, "status": "done"}
+{"time": 1542051607.5928059, "type": "items-reordered", "nums": [8, 5, 1, 4, 9, 6, 7]}
