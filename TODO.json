@@ -19,3 +19,5 @@
 {"time": 1542051511.5747163, "type": "items-reordered", "nums": [5, 4, 1, 6, 7, 8, 9, 10]}
 {"time": 1542051568.5333025, "type": "item-status-changed", "num": 10, "status": "done"}
 {"time": 1542051607.5928059, "type": "items-reordered", "nums": [8, 5, 1, 4, 9, 6, 7]}
+{"time": 1542052231.734368, "type": "item-status-changed", "num": 4, "status": "progress"}
+{"time": 1542052671.7148483, "type": "item-status-changed", "num": 4, "status": "done"}

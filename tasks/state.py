@@ -130,6 +130,29 @@ def _parse(state, cmd, args, time):
     return state, [commands.println('unknown command, try "help"')]
 
 
+@_parse.register('help')
+def _parse_help(state, _, args, time):
+    return state, [commands.println([
+        '  add TEXT',
+        '     add a new item in todo state',
+        '  status',
+        '      display current item',
+        '  backlog',
+        '      show in-progress and todo items',
+        '  all',
+        '      show all items',
+        '  start [NUM]',
+        '      start progress on current item/NUM',
+        '  done [NUM]',
+        '      mark current item/NUM done',
+        '  blocked [NUM]',
+        '      mark current item/NUM as blocked',
+        '  delete [NUM]',
+        '      mark current item/NUM as deleted',
+        '  order',
+        '      re-order todo items',
+    ])]
+
 @_parse.register('a')
 @_parse.register('add')
 def _parse_add(state, _, args, time):
