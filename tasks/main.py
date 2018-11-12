@@ -64,11 +64,12 @@ def _handle_println(event_handler, state, command):
 
 @_handle_command.register(commands.STORE)
 def _handle_store(event_handler, state, command):
+    event = {'time': now(), **command['event']}
     with open(STORE, 'a') as f:
-        dump({'time': now(), **command['event']}, f)
+        dump(event, f)
         f.write('\n')
 
-    return event_handler(state, command['event'])
+    return event_handler(state, event)
 
 
 @_handle_command.register(commands.EDITOR)

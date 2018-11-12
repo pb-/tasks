@@ -21,3 +21,9 @@
 {"time": 1542051607.5928059, "type": "items-reordered", "nums": [8, 5, 1, 4, 9, 6, 7]}
 {"time": 1542052231.734368, "type": "item-status-changed", "num": 4, "status": "progress"}
 {"time": 1542052671.7148483, "type": "item-status-changed", "num": 4, "status": "done"}
+{"time": 1542052835.287201, "type": "item-status-changed", "num": 8, "status": "progress"}
+{"time": 1542052880.9410596, "type": "item-status-changed", "num": 8, "status": "todo"}
+{"time": 1542052885.4701772, "type": "item-status-changed", "num": 8, "status": "progress"}
+{"time": 1542052894.5653834, "type": "item-status-changed", "num": 8, "status": "done"}
+{"time": 1542052929.8496397, "type": "item-status-changed", "num": 5, "status": "progress"}
+{"time": 1542053812.0897188, "type": "item-status-changed", "num": 5, "status": "done"}

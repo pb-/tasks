@@ -1,4 +1,6 @@
 import re
+from datetime import timedelta
+from functools import partial
 from itertools import chain
 
 from . import commands, events
@@ -54,6 +56,7 @@ def _update_status_changed(state, event, time):
     items = [{
         **item,
         'status': status,
+        '{}_at'.format(status): event['time'],
     } if item['num'] == num else item for item in state['items']]
 
     with_items = {
@@ -141,6 +144,8 @@ def _parse_help(state, _, args, time):
         '      show in-progress and todo items',
         '  all',
         '      show all items',
+        '  standup',
+        '      show items suitable for daily standup',
         '  start [NUM]',
         '      start progress on current item/NUM',
         '  done [NUM]',
@@ -152,6 +157,7 @@ def _parse_help(state, _, args, time):
         '  order',
         '      re-order todo items',
     ])]
+
 
 @_parse.register('a')
 @_parse.register('add')
@@ -182,6 +188,12 @@ def _parse_backlog(state, _, args, time):
 @_parse.register('all')
 def _parse_all(state, _, args, time):
     return _list(state, _iter_all)
+
+
+@_parse.register('standup')
+def _parse_standup(state, _, args, time):
+    interval = timedelta(days=1).total_seconds()
+    return _list(state, partial(_iter_standup, time - interval, time))
 
 
 def _list(state, iterator):
@@ -219,6 +231,7 @@ def _parse_order(state, _, args, time):
 @_parse.register('x')
 @_parse.register('delete')
 @_parse.register('blocked')
+@_parse.register('todo')
 def _parse_status_change(state, cmd, args, time):
     num = _parse_num(args)
     if args:
@@ -239,6 +252,7 @@ def _parse_status_change(state, cmd, args, time):
         'x': events.STATUS_DELETED,
         'delete': events.STATUS_DELETED,
         'blocked': events.STATUS_BLOCKED,
+        'todo': events.STATUS_TODO,
     }.get(cmd)
 
     return state, [commands.store(events.item_status_changed(
@@ -285,6 +299,15 @@ def _iter_status(items, status):
 
 def _iter_backlog(items):
     return chain(
+        _iter_status(items, events.STATUS_PROGRESS),
+        _iter_status(items, events.STATUS_TODO),
+    )
+
+
+def _iter_standup(done_gte, done_lt, items):
+    return chain(
+        (item for item in _iter_status(items, events.STATUS_DONE)
+         if done_gte <= item['done_at'] < done_lt),
         _iter_status(items, events.STATUS_PROGRESS),
         _iter_status(items, events.STATUS_TODO),
     )
