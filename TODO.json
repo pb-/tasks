@@ -27,3 +27,4 @@
 {"time": 1542052894.5653834, "type": "item-status-changed", "num": 8, "status": "done"}
 {"time": 1542052929.8496397, "type": "item-status-changed", "num": 5, "status": "progress"}
 {"time": 1542053812.0897188, "type": "item-status-changed", "num": 5, "status": "done"}
+{"time": 1542054078.021661, "type": "item-added", "item": {"num": 11, "text": "don't print color when talking to TTY", "status": "todo"}}

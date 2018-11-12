@@ -11,7 +11,7 @@ from .color import shell_color
 
 
 STORE = os.getenv(
-    'TASKS_STORE', os.path.join(os.getenv('HOME'), '.tasks2.json'))
+    'TASKS_STORE', os.path.join(os.getenv('HOME'), '.tasks.json'))
 
 
 def run():
