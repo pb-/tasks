@@ -109,7 +109,7 @@ def _update_reordered(state, event, time):
 
     with_selected = {
         **with_items,
-        'selected': _next_backlog_num(state['items']),
+        'selected': _next_backlog_num(with_items['items']),
     }
 
     return with_selected, [
