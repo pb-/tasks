@@ -30,7 +30,7 @@ def _parse_help(state, _, args, time):
         '      show in-progress and todo items',
         '  all',
         '      show all items',
-        '  standup',
+        '  standup [DAYS]',
         '      show items suitable for daily standup',
         '  start [NUM]',
         '      start progress on current item/NUM',
@@ -78,7 +78,7 @@ def _parse_all(state, _, args, time):
 
 @_parse.register('standup')
 def _parse_standup(state, _, args, time):
-    interval = timedelta(days=1).total_seconds()
+    interval = timedelta(days=_parse_num(args, 1)).total_seconds()
     return _list(state, partial(model.iter_standup, time - interval, time))
 
 
@@ -165,8 +165,8 @@ def _get_item(state, args):
     return item, []
 
 
-def _parse_num(s):
+def _parse_num(s, default=None):
     try:
         return int(s)
     except ValueError:
-        return None
+        return default

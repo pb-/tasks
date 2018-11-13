@@ -39,3 +39,5 @@
 {"time": 1542137142.1457446, "type": "item-status-changed", "num": 6, "status": "done"}
 {"time": 1542137143.8217218, "type": "item-status-changed", "num": 11, "status": "progress"}
 {"time": 1542137519.9151256, "type": "item-status-changed", "num": 11, "status": "done"}
+{"time": 1542137851.3671632, "type": "item-added", "item": {"num": 14, "text": "add DAYS argument to standup", "status": "todo"}}
+{"time": 1542137858.8234787, "type": "item-status-changed", "num": 14, "status": "progress"}
