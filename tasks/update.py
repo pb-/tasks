@@ -5,12 +5,17 @@ from .func import valuedispatch
 from .parse import parse_input
 
 
-@valuedispatch(lambda args, _: args[1].get('type'))
 def update(state, event, time):
+    after, cmds = _update(state, event, time)
+    return after, cmds + _notify_change(state, after)
+
+
+@valuedispatch(lambda args, _: args[1].get('type'))
+def _update(state, event, time):
     raise ValueError('bad event: {}'.format(event.get('type')))
 
 
-@update.register(events.INITIALIZED)
+@_update.register(events.INITIALIZED)
 def _update_initialized(state, event, time):
     return state, [commands.println([
         'Welcome to tasks',
@@ -18,19 +23,17 @@ def _update_initialized(state, event, time):
     ])]
 
 
-@update.register(events.ITEM_ADDED)
+@_update.register(events.ITEM_ADDED)
 def _update_item_added(state, event, time):
-    s = {
+    return {
         **state,
         'items': [*state['items'], event['item']],
         'last_num': event['item']['num'],
         'selected': state['selected'] or event['item']['num'],
-    }
-
-    return s, _notify_change(state, s)
+    }, []
 
 
-@update.register(events.ITEM_STATUS_CHANGED)
+@_update.register(events.ITEM_STATUS_CHANGED)
 def _update_status_changed(state, event, time):
     status = event['status']
     num = event['num']
@@ -45,12 +48,10 @@ def _update_status_changed(state, event, time):
         'items': items,
     }
 
-    with_selected = {
+    return {
         **with_items,
         'selected': _next_selection(with_items, num, status),
-    }
-
-    return with_selected, _notify_change(state, with_selected)
+    }, []
 
 
 def _next_selection(state, num, status):
@@ -68,7 +69,7 @@ def _next_selection(state, num, status):
     return model.next_backlog_num(state['items'])
 
 
-@update.register(events.ITEM_ORDER_EDITED)
+@_update.register(events.ITEM_ORDER_EDITED)
 def _update_order_edited(state, event, time):
     match = re.compile(r'^\s*#(?P<num>\d+)').match
     lines = event['content'].strip().split('\n')
@@ -80,7 +81,7 @@ def _update_order_edited(state, event, time):
     return state, [commands.store(events.items_reordered(nums))]
 
 
-@update.register(events.ITEMS_REORDERED)
+@_update.register(events.ITEMS_REORDERED)
 def _update_reordered(state, event, time):
     ordered = [
         i for num in event['nums'] for i in state['items'] if i['num'] == num]
@@ -91,17 +92,13 @@ def _update_reordered(state, event, time):
         'items': ordered + rest,
     }
 
-    with_selected = {
+    return {
         **with_items,
         'selected': model.next_backlog_num(with_items['items']),
-    }
-
-    return with_selected, [
-        commands.println('order updated'),
-        *_notify_change(state, with_selected)]
+    }, [commands.println('order updated')]
 
 
-@update.register(events.ITEM_EDIT_REQUESTED)
+@_update.register(events.ITEM_EDIT_REQUESTED)
 def _update_item_edit_requested(state, event, time):
     text = event['text'].strip()
     if not text:
@@ -110,7 +107,7 @@ def _update_item_edit_requested(state, event, time):
     return state, [commands.store(events.item_edited(event['num'], text))]
 
 
-@update.register(events.ITEM_EDITED)
+@_update.register(events.ITEM_EDITED)
 def _update_item_edited(state, event, time):
     return {
         **state,
@@ -121,7 +118,7 @@ def _update_item_edited(state, event, time):
     }, [commands.println('item updated')]
 
 
-@update.register(events.INPUT_READ)
+@_update.register(events.INPUT_READ)
 def _update_input(state, event, time):
     return state, parse_input(state, event['input'].strip(), time)
 
