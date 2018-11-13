@@ -32,7 +32,7 @@ def _repl_shell(match):
 
 
 def _repl_none(match):
-    return format(match.group('start') + match.group('text'))
+    return match.group('start') + match.group('text')
 
 
 def _unescape(text):

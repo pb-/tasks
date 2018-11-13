@@ -6,13 +6,36 @@ from .parse import parse_input
 
 
 def update(state, event, time):
-    after, cmds = _update(state, event, time)
+    after, cmds = _with_undo(state, event, time)
     return after, cmds + _notify_change(state, after)
+
+
+def _with_undo(state, event, time):
+    after, cmds = _update(state, event, time)
+
+    if state == after or event.get('type') == events.UNDONE:
+        return after, cmds
+
+    return {**after, 'prev': _prune_prev(state, 10)}, cmds
+
+
+def _prune_prev(state, depth):
+    if not state or not depth:
+        return None
+
+    prev = _prune_prev(state['prev'], depth - 1)
+
+    return {**state, 'prev': prev}
 
 
 @valuedispatch(lambda args, _: args[1].get('type'))
 def _update(state, event, time):
     raise ValueError('bad event: {}'.format(event.get('type')))
+
+
+@_update.register(events.UNDONE)
+def _update_undo(state, event, time):
+    return state['prev'], []
 
 
 @_update.register(events.INITIALIZED)

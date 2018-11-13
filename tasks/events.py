@@ -7,6 +7,7 @@ ITEM_ORDER_EDITED = 'item-order-edited'
 ITEMS_REORDERED = 'items-reordered'
 ITEM_EDIT_REQUESTED = 'item-edit-requested'
 ITEM_EDITED = 'item-edited'
+UNDONE = 'undone'
 
 STATUS_TODO = 'todo'
 STATUS_PROGRESS = 'progress'
@@ -74,4 +75,10 @@ def item_edited(num, text):
         'type': ITEM_EDITED,
         'num': num,
         'text': text,
+    }
+
+
+def undone():
+    return {
+        'type': UNDONE,
     }

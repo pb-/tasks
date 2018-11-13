@@ -9,6 +9,7 @@ def initial_state():
         'items': [],
         'selected': 0,
         'last_num': 0,
+        'prev': None,
     }
 
 

@@ -42,6 +42,8 @@ def _parse_help(state, _, args, time):
         '      mark current item/NUM as deleted',
         '  order',
         '      re-order todo items',
+        '  undo',
+        '      undo last command',
     ])]
 
 
@@ -109,6 +111,14 @@ def _parse_order(state, _, args, time):
         for item in model.iter_status(state['items'], events.STATUS_TODO))
 
     return [commands.editor(content, events.item_order_edited)]
+
+
+@_parse.register('undo')
+def _parse_undo(state, _, args, time):
+    if state['prev']:
+        return [commands.store(events.undone())]
+
+    return [commands.println('nothing to undo')]
 
 
 @_parse.register('edit')
