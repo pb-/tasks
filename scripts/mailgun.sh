@@ -2,7 +2,7 @@
 
 if [[ -z "$API_KEY" || -z "$DOMAIN" || -z "$EMAIL" ]]
 then
-    echo "incomplete configuration, noting sent" >&2
+    echo "incomplete configuration, nothing sent" >&2
     exit 1
 fi
 
