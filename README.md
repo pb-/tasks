@@ -2,6 +2,8 @@
 
 Proof of concept for a simple task queue, with a focus on UX and clean internal design.
 
+![Screenshot of a tasks session](images/demo.png)
+
 To get started, check out the TODO items for this program with:
 
 ```
