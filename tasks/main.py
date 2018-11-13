@@ -1,5 +1,6 @@
 import os
 import readline  # noqa
+import sys
 from functools import partial
 from json import dump, loads
 from time import time as now
@@ -15,12 +16,18 @@ STORE = os.getenv(
 
 
 def run():
-    state = initial_state()
+    if len(sys.argv) > 1:
+        _non_interactive(' '.join(sys.argv[1:]))
+    else:
+        _interactive()
 
-    for event in _load():
-        state, _ = update(state, event, event['time'])
 
-    state = _handle_event(update, state, events.initialized())
+def _non_interactive(input_):
+    _handle_event(update, _state(), events.input_read(input_))
+
+
+def _interactive():
+    state = _handle_event(update, _state(), events.initialized())
 
     try:
         while True:
@@ -28,6 +35,15 @@ def run():
                 '{} '.format(render(state)))))
     except (EOFError, KeyboardInterrupt):
         print()
+
+
+def _state():
+    state = initial_state()
+
+    for event in _load():
+        state, _ = update(state, event, event['time'])
+
+    return state
 
 
 def _load():
