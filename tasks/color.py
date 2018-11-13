@@ -14,17 +14,25 @@ _MAP = {
 
 
 def shell_color(text):
-    return _unescape(_RE.subn(_repl, text)[0])
+    return _unescape(_RE.subn(_repl_shell, text)[0])
+
+
+def no_color(text):
+    return _unescape(_RE.subn(_repl_none, text)[0])
 
 
 def escape(text):
     return text.replace('[', '[[').replace(']', ']]')
 
 
-def _repl(match):
+def _repl_shell(match):
     return '{}\033[{}m{}\033[0m'.format(
         match.group('start'), _MAP.get(match.group('color')),
         match.group('text'))
+
+
+def _repl_none(match):
+    return format(match.group('start') + match.group('text'))
 
 
 def _unescape(text):

@@ -6,12 +6,13 @@ from json import dump, loads
 from time import time as now
 
 from . import commands, events
-from .color import shell_color
+from .color import no_color, shell_color
 from .func import valuedispatch
 from .model import initial_state, render
 from .update import update
 
-STORE = os.getenv(
+_COLOR = shell_color if sys.stdout.isatty() else no_color
+_STORE = os.getenv(
     'TASKS_STORE', os.path.join(os.getenv('HOME'), '.tasks.json'))
 
 
@@ -47,10 +48,10 @@ def _state():
 
 
 def _load():
-    if not os.path.exists(STORE):
+    if not os.path.exists(_STORE):
         raise StopIteration
 
-    with open(STORE) as f:
+    with open(_STORE) as f:
         for line in f:
             yield loads(line)
 
@@ -73,7 +74,7 @@ def _handle_command(event_handler, command):
 @_handle_command.register(commands.PRINTLN)
 def _handle_println(event_handler, state, command):
     for line in command['lines']:
-        print(shell_color(line))
+        print(_COLOR(line))
 
     return state
 
@@ -81,7 +82,7 @@ def _handle_println(event_handler, state, command):
 @_handle_command.register(commands.STORE)
 def _handle_store(event_handler, state, command):
     event = {'time': now(), **command['event']}
-    with open(STORE, 'a') as f:
+    with open(_STORE, 'a') as f:
         dump(event, f)
         f.write('\n')
 
