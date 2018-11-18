@@ -22,6 +22,7 @@ def _parse_help(state, _, args, time):
     return [commands.println([
         '  add TEXT',
         '     add a new item in todo state',
+        '     use addp/addd to add an item in progress/done status',
         '  edit [NUM]',
         '     edit current item/NUM',
         '  status',
@@ -51,11 +52,19 @@ def _parse_help(state, _, args, time):
 
 @_parse.register('a')
 @_parse.register('add')
-def _parse_add(state, _, args, time):
+@_parse.register('addd')
+@_parse.register('addp')
+def _parse_add(state, cmd, args, time):
     event = events.item_added(1 + state['last_num'], args)
+    extra = [commands.store(events.item_status_changed(event['item']['num'], {
+        'addd': events.STATUS_DONE,
+        'addp': events.STATUS_PROGRESS,
+    }.get(cmd)))] if cmd in ('addd', 'addp') else []
+
     return [
         commands.println('added {}'.format(model.fmt_item(event['item']))),
         commands.store(event),
+        *extra,
     ]
 
 
