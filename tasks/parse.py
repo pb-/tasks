@@ -40,6 +40,8 @@ def _parse_help(state, _, args, time):
         '      mark current item/NUM as blocked',
         '  delete [NUM]',
         '      mark current item/NUM as deleted',
+        '  todo [NUM]',
+        '      mark current/NUM as todo',
         '  order',
         '      re-order todo items',
         '  undo',
