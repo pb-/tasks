@@ -21,3 +21,11 @@ todo:
 dev_install:
 	pipenv install --dev
 .PHONY: dev_install
+
+dist:
+	pipenv run python setup.py sdist bdist_wheel
+.PHONY: dist
+
+upload:
+	pipenv run twine upload dist/*
+.PHONY: upload

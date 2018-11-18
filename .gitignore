@@ -3,3 +3,5 @@
 .env
 tests/.cache
 tasks.egg-info
+build
+dist
