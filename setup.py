@@ -10,4 +10,7 @@ setup(
             'tasks = tasks.main:run',
         ],
     },
+    scripts=[
+        'scripts/tasks-i3status',
+    ],
 )

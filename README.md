@@ -31,3 +31,19 @@ EMAIL=...
 30 9 * * tue,wed,thu,fri /path/to/tasks standup 1 | /path/to/mailgun.sh
 30 9 * * mon /path/to/tasks standup 3 | /path/to/mailgun.sh
 ```
+
+
+## Status for i3
+
+Follow these steps to add the output of `status` to your i3 status bar.
+
+1. Set up a cron job (`crontab -e`) that saves the status every minute.
+   ```
+   * * * * * /path/to/tasks status > $HOME/.tasks.status
+   ```
+2. Configure i3 to use the provided status wrapper.
+   ```
+   ...
+       status_command tasks-i3status
+   ...
+   ```

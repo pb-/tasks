@@ -1,0 +1,3 @@
+#!/bin/bash
+
+i3status | while read status; do echo "$(cat $HOME/.tasks.status) | $status"; done

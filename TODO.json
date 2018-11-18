@@ -45,3 +45,4 @@
 {"time": 1542147250.3981996, "type": "item-status-changed", "num": 9, "status": "done"}
 {"time": 1542147256.986123, "type": "item-status-changed", "num": 7, "status": "progress"}
 {"time": 1542150162.4647644, "type": "item-status-changed", "num": 7, "status": "done"}
+{"time": 1542579407.8001313, "type": "item-added", "item": {"num": 15, "text": "write status line automatically instead of cron", "status": "todo"}}
