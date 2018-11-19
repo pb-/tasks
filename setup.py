@@ -2,9 +2,11 @@ from setuptools import find_packages, setup
 
 setup(
     name='tasks',
-    version='2.0.0',
+    version='2.0.1',
     author='Paul Baecher',
     description='A simple personal task queue to track todo items',
+    long_description=open('README.md').read(),
+    long_description_content_type='text/markdown',
     url='https://github.com/pb-/tasks',
     packages=find_packages(),
     install_requires=[
