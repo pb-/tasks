@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name='tasks',
-    version='2.0.1',
+    version='2.0.2',
     author='Paul Baecher',
     description='A simple personal task queue to track todo items',
     long_description=open('README.md').read(),

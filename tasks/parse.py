@@ -56,13 +56,17 @@ def _parse_help(state, _, args, time):
 @_parse.register('addp')
 def _parse_add(state, cmd, args, time):
     event = events.item_added(1 + state['last_num'], args)
-    extra = [commands.store(events.item_status_changed(event['item']['num'], {
+    status = {
         'addd': events.STATUS_DONE,
         'addp': events.STATUS_PROGRESS,
-    }.get(cmd)))] if cmd in ('addd', 'addp') else []
+    }.get(cmd, events.STATUS_TODO)
+    item = {**event['item'], 'status': status}
+
+    extra = [commands.store(events.item_status_changed(
+        item['num'], status))] if cmd in ('addd', 'addp') else []
 
     return [
-        commands.println('added {}'.format(model.fmt_item(event['item']))),
+        commands.println('added {}'.format(model.fmt_item(item))),
         commands.store(event),
         *extra,
     ]
