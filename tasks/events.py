@@ -29,8 +29,10 @@ def initialized():
     }
 
 
-def item_added(num, text, status=STATUS_TODO):
+def item_added(num, text, status=STATUS_TODO, on_top=False):
+    position = {'position': 'top'} if on_top else {}
     return {
+        **position,
         'type': ITEM_ADDED,
         'item': {
             'num': num,

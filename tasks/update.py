@@ -50,7 +50,9 @@ def _update_initialized(state, event, time):
 def _update_item_added(state, event, time):
     return {
         **state,
-        'items': [*state['items'], event['item']],
+        'items':
+            [event['item'], *state['items']] if event.get('position') == 'top'
+            else [*state['items'], event['item']],
         'last_num': event['item']['num'],
         'selected': state['selected'] or event['item']['num'],
     }, []

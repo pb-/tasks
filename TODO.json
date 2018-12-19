@@ -54,3 +54,6 @@
 {"time": 1545240163.056654, "type": "item-added", "item": {"num": 18, "text": "add comment (=nop) event to document .tasks.json file?", "status": "todo"}}
 {"time": 1545240439.1707482, "type": "item-added", "item": {"num": 19, "text": "display version on startup", "status": "todo"}}
 {"time": 1545240450.5381315, "type": "items-reordered", "nums": [19, 17, 15, 18]}
+{"time": 1545255510.8155062, "type": "items-reordered", "nums": [17, 19, 15, 18]}
+{"time": 1545255526.822111, "type": "item-status-changed", "num": 17, "status": "progress"}
+{"time": 1545260298.2349856, "type": "item-status-changed", "num": 17, "status": "done"}

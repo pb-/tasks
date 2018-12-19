@@ -23,6 +23,7 @@ def _parse_help(state, _, args, time):
         '  add TEXT',
         '     add a new item in todo state',
         '     use addp/addd to add an item in progress/done status',
+        '     use addt to add an item on top of the backlog',
         '  edit [NUM]',
         '     edit current item/NUM',
         '  status',
@@ -54,8 +55,10 @@ def _parse_help(state, _, args, time):
 @_parse.register('add')
 @_parse.register('addd')
 @_parse.register('addp')
+@_parse.register('addt')
 def _parse_add(state, cmd, args, time):
-    event = events.item_added(1 + state['last_num'], args)
+    event = events.item_added(
+        1 + state['last_num'], args, on_top=cmd == 'addt')
     status = {
         'addd': events.STATUS_DONE,
         'addp': events.STATUS_PROGRESS,
