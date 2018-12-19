@@ -49,3 +49,6 @@
 {"time": 1545075497.1798706, "type": "item-added", "item": {"num": 16, "text": "make addd/addp display correct status", "status": "todo"}}
 {"time": 1545075500.4468336, "type": "item-status-changed", "num": 16, "status": "progress"}
 {"time": 1545075920.3475158, "type": "item-status-changed", "num": 16, "status": "done"}
+{"time": 1545239868.9973238, "type": "item-added", "item": {"num": 17, "text": "implement addt - add item on top of the backlog", "status": "todo"}}
+{"time": 1545239875.527069, "type": "items-reordered", "nums": [17, 15]}
+{"time": 1545240163.056654, "type": "item-added", "item": {"num": 18, "text": "add comment (=nop) event to document .tasks.json file?", "status": "todo"}}
