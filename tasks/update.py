@@ -48,13 +48,18 @@ def _update_initialized(state, event, time):
 
 @_update.register(events.ITEM_ADDED)
 def _update_item_added(state, event, time):
-    return {
+    s = {
         **state,
         'items':
             [event['item'], *state['items']] if event.get('position') == 'top'
             else [*state['items'], event['item']],
         'last_num': event['item']['num'],
-        'selected': state['selected'] or event['item']['num'],
+    }
+
+    return {
+        **s,
+        'selected': _next_selection(
+            s, event['item']['num'], event['item']['status']),
     }, []
 
 
