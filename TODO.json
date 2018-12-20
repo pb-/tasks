@@ -60,3 +60,6 @@
 {"time": 1545295950.6454554, "position": "top", "type": "item-added", "item": {"num": 20, "text": "reverse display order for all item listings", "status": "todo"}}
 {"time": 1545295993.8854706, "type": "item-added", "item": {"num": 21, "text": "fix bug when adding on top of todo list with no items in progress", "status": "todo"}}
 {"time": 1545296021.3162372, "type": "items-reordered", "nums": [21, 20, 19, 15, 18]}
+{"time": 1545331349.5830567, "type": "items-reordered", "nums": [20, 21, 19, 15, 18]}
+{"time": 1545331353.4654205, "type": "item-status-changed", "num": 20, "status": "progress"}
+{"time": 1545331412.015408, "type": "item-status-changed", "num": 20, "status": "done"}

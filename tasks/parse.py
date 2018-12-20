@@ -114,7 +114,7 @@ def _list(state, iterator):
             ' ' * (max_len - _item_len(state, item)),
             '*' if item['num'] == state['selected'] else '',
             model.fmt_item(item)))
-        for item in items
+        for item in reversed(items)
     ]
 
 
