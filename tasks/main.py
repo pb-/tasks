@@ -5,6 +5,8 @@ from functools import partial
 from json import dump, loads
 from time import time as now
 
+from pkg_resources import get_distribution
+
 from . import commands, events
 from .color import no_color, shell_color
 from .func import valuedispatch
@@ -20,15 +22,15 @@ def run():
     if len(sys.argv) > 1:
         _non_interactive(' '.join(sys.argv[1:]))
     else:
-        _interactive()
+        _interactive(get_distribution('tasks').version)
 
 
 def _non_interactive(input_):
     _handle_event(update, _state(), events.input_read(input_))
 
 
-def _interactive():
-    state = _handle_event(update, _state(), events.initialized())
+def _interactive(version):
+    state = _handle_event(update, _state(), events.initialized(version))
 
     try:
         while True:

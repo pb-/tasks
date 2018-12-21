@@ -41,7 +41,7 @@ def _update_undo(state, event, time):
 @_update.register(events.INITIALIZED)
 def _update_initialized(state, event, time):
     return state, [commands.println([
-        'Welcome to tasks',
+        'Welcome to tasks {}'.format(event['version']),
         'type help for help, intro for an introduction, and exit with ^D or ^C'
     ])]
 

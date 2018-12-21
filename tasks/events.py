@@ -23,9 +23,10 @@ def input_read(input_):
     }
 
 
-def initialized():
+def initialized(version):
     return {
         'type': INITIALIZED,
+        'version': version,
     }
 
 
