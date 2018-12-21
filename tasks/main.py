@@ -94,7 +94,7 @@ def _handle_editor(event_handler, state, command):
     path = os.path.join('/tmp', 'tasks.{}.edit'.format(os.getpid()))
 
     open(path, 'w').write(command['content'])
-    os.system('editor {}'.format(path))
+    os.system('{} {}'.format(os.getenv('EDITOR', 'editor'), path))
     edited = open(path).read()
 
     os.remove(path)
