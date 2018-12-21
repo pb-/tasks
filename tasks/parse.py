@@ -124,9 +124,12 @@ def _item_len(state, item):
 
 @_parse.register('order')
 def _parse_order(state, _, args, time):
+    items = list(model.iter_status(state['items'], events.STATUS_TODO))
+    if len(items) < 2:
+        return [commands.println('less than two todo items cannot be ordered')]
+
     content = ''.join(
-        '#{} {}\n'.format(item['num'], item['text'])
-        for item in model.iter_status(state['items'], events.STATUS_TODO))
+        '#{} {}\n'.format(item['num'], item['text']) for item in items)
 
     return [commands.editor(content, events.item_order_edited)]
 

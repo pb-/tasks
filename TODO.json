@@ -69,3 +69,7 @@
 {"time": 1545417682.6523259, "type": "item-added", "item": {"num": 24, "text": "prefer $EDITOR over editor symlink", "status": "todo"}}
 {"time": 1545417701.5039089, "type": "items-reordered", "nums": [22, 23, 24, 19, 15, 18]}
 {"time": 1545417724.9243922, "type": "item-edited", "num": 22, "text": "advise when reordering doesn't make sense"}
+{"time": 1545417988.906244, "type": "item-status-changed", "num": 22, "status": "progress"}
+{"time": 1545418267.1734767, "type": "item-status-changed", "num": 22, "status": "done"}
+{"time": 1545418275.8968565, "type": "items-reordered", "nums": [24, 23, 19, 15, 18]}
+{"time": 1545418279.2721477, "type": "item-status-changed", "num": 24, "status": "progress"}
