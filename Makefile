@@ -23,6 +23,7 @@ dev_install:
 .PHONY: dev_install
 
 dist:
+	rm dist/*
 	pipenv run python setup.py sdist bdist_wheel
 .PHONY: dist
 
