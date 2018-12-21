@@ -17,36 +17,51 @@ def _parse(state, cmd, args, time):
     return [commands.println('unknown command, try "help"')]
 
 
+@_parse.register('intro')
+def _parse_intro(state, _, args, time):
+    return [commands.println([
+        'tasks is a simple interactive task queue that enables a kanban-like',
+        'workflow. One item is always selected (its number being displayed ',
+        'at the prompt) and marks the current item you are looking at; use ',
+        'the commands to interact with the item. Most commands will also ',
+        'support a number argument so that you can manipulate the other ',
+        'items whithout having them selected, but generally the idea is to ',
+        'work on one item at a time.',
+    ])]
+
+
 @_parse.register('help')
 def _parse_help(state, _, args, time):
     return [commands.println([
-        '  add TEXT',
+        '  [white intro]',
+        '     get a quick introduction to task\'s concepts',
+        '  [white add TEXT]',
         '     add a new item in todo state',
         '     use addp/addd to add an item in progress/done status',
         '     use addt to add an item on top of the backlog',
-        '  edit [NUM]',
+        '  [white edit] [gray [[NUM]]]',
         '     edit current item/NUM',
-        '  status',
+        '  [white status]',
         '      display current item',
-        '  backlog',
+        '  [white backlog]',
         '      show in-progress and todo items',
-        '  all',
+        '  [white all]',
         '      show all items',
-        '  standup [DAYS]',
+        '  [white standup] [gray [[DAYS]]]',
         '      show items suitable for daily standup',
-        '  start [NUM]',
+        '  [white start] [gray [[NUM]]]',
         '      start progress on current item/NUM',
-        '  done [NUM]',
+        '  [white done] [gray [[NUM]]]',
         '      mark current item/NUM done',
-        '  blocked [NUM]',
+        '  [white blocked] [gray [[NUM]]]',
         '      mark current item/NUM as blocked',
-        '  delete [NUM]',
+        '  [white delete] [gray [[NUM]]]',
         '      mark current item/NUM as deleted',
-        '  todo [NUM]',
+        '  [white todo] [gray [[NUM]]]',
         '      mark current/NUM as todo',
-        '  order',
+        '  [white order]',
         '      re-order todo items',
-        '  undo',
+        '  [white undo]',
         '      undo last command',
     ])]
 
