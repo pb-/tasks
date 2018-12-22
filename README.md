@@ -47,3 +47,11 @@ To get started, have a look at the todo items for this project.
 make dev_install  # one-time setup
 make todo
 ```
+
+### Contributing
+
+Pull requests are welcome. Please do keep in mind that the code is heavily inspired by the [Elm architecture](https://guide.elm-lang.org/architecture/) and consider the following guidelines.
+
+ * Avoid mutation whenever possible, take advantage of [PEP 448](https://www.python.org/dev/peps/pep-0448/) to create updated versions of collections instead.
+ * Side effects (and only side effects) should be in `main.py`; all other modules should be limited to pure code.
+ * Avoid classes unless you have a really good reason for them (the code does not have any classes at the moment.)
