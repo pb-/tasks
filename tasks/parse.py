@@ -1,8 +1,9 @@
 from datetime import timedelta
 from functools import partial
 
+from datadispatch import datadispatch
+
 from . import commands, events, model
-from .func import valuedispatch
 
 
 def parse_input(state, input_, time):
@@ -12,7 +13,7 @@ def parse_input(state, input_, time):
     return _parse(state, cmd, args, time)
 
 
-@valuedispatch(lambda args, _: args[1])
+@datadispatch(lambda args, _: args[1])
 def _parse(state, cmd, args, time):
     return [commands.println('unknown command, try "help"')]
 

@@ -12,6 +12,7 @@ twine = "*"
 
 [packages]
 tasks = {path = ".", editable = true}
+datadispatch = "*"
 
 [requires]
 python_version = "3"

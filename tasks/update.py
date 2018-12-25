@@ -1,7 +1,8 @@
 import re
 
+from datadispatch import datadispatch
+
 from . import commands, events, model
-from .func import valuedispatch
 from .parse import parse_input
 
 
@@ -28,7 +29,7 @@ def _prune_prev(state, depth):
     return {**state, 'prev': prev}
 
 
-@valuedispatch(lambda args, _: args[1].get('type'))
+@datadispatch(lambda args, _: args[1].get('type'))
 def _update(state, event, time):
     raise ValueError('bad event: {}'.format(event.get('type')))
 

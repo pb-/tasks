@@ -5,11 +5,11 @@ from functools import partial
 from json import dump, loads
 from time import time as now
 
+from datadispatch import datadispatch
 from pkg_resources import get_distribution
 
 from . import commands, events
 from .color import no_color, shell_color
-from .func import valuedispatch
 from .model import initial_state, render
 from .update import update
 
@@ -68,7 +68,7 @@ def _handle_event(update_func, state, event):
     return state
 
 
-@valuedispatch(lambda args, _: args[2].get('type'))
+@datadispatch(lambda args, _: args[2].get('type'))
 def _handle_command(event_handler, command):
     raise ValueError('bad command: {}'.format(command.get('type')))
 
