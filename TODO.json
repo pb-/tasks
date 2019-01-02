@@ -80,3 +80,6 @@
 {"time": 1545421202.6831603, "type": "item-status-changed", "num": 19, "status": "done"}
 {"time": 1546437463.6340003, "type": "item-added", "item": {"num": 25, "text": "increase visibility of blocked items (prompt? and list cmd?)", "status": "todo"}}
 {"time": 1546437471.4050233, "type": "items-reordered", "nums": [25, 15, 18]}
+{"time": 1546468591.7961783, "type": "item-status-changed", "num": 25, "status": "progress"}
+{"time": 1546468593.4096112, "type": "item-status-changed", "num": 25, "status": "done"}
+{"time": 1546468605.581481, "position": "top", "type": "item-added", "item": {"num": 26, "text": "add command to list blocked items", "status": "todo"}}

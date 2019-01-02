@@ -14,11 +14,14 @@ def initial_state():
 
 
 def render(state):
+    block = '!' if next(
+        iter_status(state['items'], events.STATUS_BLOCKED), None) else ''
+
     if state['selected']:
         item = find(state['items'], state['selected'])
-        return '#{}({})>'.format(state['selected'], item['status'][0])
+        return '#{}({}){}>'.format(state['selected'], item['status'][0], block)
     else:
-        return '>'
+        return '{}>'.format(block)
 
 
 def find(items, num):
