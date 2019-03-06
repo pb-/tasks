@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name='tasks',
-    version='2.4.0',
+    version='2.4.1',
     author='Paul Baecher',
     description='A simple personal task queue to track todo items',
     long_description=open('README.md').read(),
@@ -10,6 +10,7 @@ setup(
     url='https://github.com/pb-/tasks',
     packages=find_packages(),
     install_requires=[
+        'datadispatch',
     ],
     entry_points={
         'console_scripts': [
