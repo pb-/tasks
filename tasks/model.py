@@ -56,6 +56,7 @@ def iter_standup(done_gte, done_lt, items):
     return chain(
         (item for item in iter_status(items, events.STATUS_DONE)
          if done_gte <= item['done_at'] < done_lt),
+        iter_status(items, events.STATUS_BLOCKED),
         iter_status(items, events.STATUS_PROGRESS),
         iter_status(items, events.STATUS_TODO),
     )

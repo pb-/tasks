@@ -32,7 +32,10 @@ def _repl_shell(match):
 
 
 def _repl_none(match):
-    return match.group('start') + match.group('text')
+    if match.group('color') in ('gray', 'normal', 'white'):
+        return match.group('start') + match.group('text')
+
+    return '{}[{}]'.format(match.group('start'), match.group('text'))
 
 
 def _unescape(text):
