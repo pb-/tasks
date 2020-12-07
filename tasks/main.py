@@ -51,7 +51,7 @@ def _state():
 
 def _load():
     if not os.path.exists(_STORE):
-        raise StopIteration
+        return
 
     with open(_STORE) as f:
         for line in f:
