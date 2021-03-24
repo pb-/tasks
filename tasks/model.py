@@ -32,7 +32,7 @@ def next_backlog_num(items):
     return next(iter_backlog(items), {'num': 0})['num']
 
 
-def fmt_item(item, color=True):
+def fmt_item(item, color=True, shortcut=None):
     color = {
         events.STATUS_TODO: 'blue',
         events.STATUS_PROGRESS: 'yellow',
@@ -41,8 +41,12 @@ def fmt_item(item, color=True):
         events.STATUS_DELETED: 'normal',
     }.get(item['status'])
 
-    return '[gray #{}] [{} {}] [white {}]'.format(
-        item['num'], color, item['status'], escape(item['text']))
+    hint = '' if shortcut is None else (
+        '([cyan {}]) '.format(shortcut) if shortcut else '... '
+    )
+
+    return '[gray #{}] {}[{} {}] [white {}]'.format(
+        item['num'], hint, color, item['status'], escape(item['text']))
 
 
 def iter_backlog(items):

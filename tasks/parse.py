@@ -121,16 +121,24 @@ def _parse_standup(state, _, args, time):
 
 def _list(state, iterator):
     items = list(iterator(state['items']))
+    keys = 'asdfjklghqweruiopzxcvmtynb'
+
+    shortcuts = {
+        key: item['num']
+        for key, item in zip(keys, items)
+    }
+    inv_shorcuts = {v: k for k, v in shortcuts.items()}
+
     if not items:
         return state, []
 
     max_len = max(_item_len(state, item) for item in items)
 
-    return state, [
+    return {**state, 'shortcuts': shortcuts}, [
         commands.println('{}{}{}'.format(
             ' ' * (max_len - _item_len(state, item)),
             '*' if item['num'] == state['selected'] else '',
-            model.fmt_item(item)))
+            model.fmt_item(item, shortcut=inv_shorcuts.get(item['num'], ''))))
         for item in reversed(items)
     ]
 
@@ -205,7 +213,7 @@ def _parse_status_change(state, cmd, args, time):
 
 
 def _get_item(state, args):
-    num = _parse_num(args)
+    num = _parse_num(args) or state.get('shortcuts', {}).get(args)
     if args and not num:
         return None, [commands.println('bad item num')]
 

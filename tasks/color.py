@@ -4,6 +4,7 @@ _RE = re.compile(
     r'(?P<start>^|[^[])\[(?P<color>\w+) (?P<text>([^\[\]]|\[\[|\]\])*)\]')
 _MAP = {
     'blue': '1;34',
+    'cyan': '1;36',
     'gray': '1;30',
     'green': '1;32',
     'normal': '0',
