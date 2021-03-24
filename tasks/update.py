@@ -151,7 +151,7 @@ def _update_item_edited(state, event, time):
 
 @_update.register(events.INPUT_READ)
 def _update_input(state, event, time):
-    return state, parse_input(state, event['input'].strip(), time)
+    return parse_input(state, event['input'].strip(), time)
 
 
 def _notify_change(before, after):

@@ -15,12 +15,12 @@ def parse_input(state, input_, time):
 
 @datadispatch(lambda args, _: args[1])
 def _parse(state, cmd, args, time):
-    return [commands.println('unknown command, try "help"')]
+    return state, [commands.println('unknown command, try "help"')]
 
 
 @_parse.register('intro')
 def _parse_intro(state, _, args, time):
-    return [commands.println([
+    return state, [commands.println([
         'tasks is a simple interactive task queue that enables a kanban-like',
         'workflow. One item is always selected (its number being displayed ',
         'at the prompt) and marks the current item you are looking at; use ',
@@ -33,7 +33,7 @@ def _parse_intro(state, _, args, time):
 
 @_parse.register('help')
 def _parse_help(state, _, args, time):
-    return [commands.println([
+    return state, [commands.println([
         '  [white intro]',
         '     get a quick introduction to task\'s concepts',
         '  [white add TEXT]',
@@ -84,7 +84,7 @@ def _parse_add(state, cmd, args, time):
     extra = [commands.store(events.item_status_changed(
         item['num'], status))] if cmd in ('addd', 'addp') else []
 
-    return [
+    return state, [
         commands.println('added {}'.format(model.fmt_item(item))),
         commands.store(event),
         *extra,
@@ -95,10 +95,11 @@ def _parse_add(state, cmd, args, time):
 @_parse.register('status')
 def _parse_status(state, _, args, time):
     if not state['selected']:
-        return [commands.println('no item selected')]
+        return state, [commands.println('no item selected')]
 
-    return [commands.println('currently on {}'.format(
-        model.fmt_item(model.find(state['items'], state['selected']))))]
+    return state, [commands.println('currently on {}'.format(
+        model.fmt_item(model.find(state['items'], state['selected']))))
+    ]
 
 
 @_parse.register('bl')
@@ -121,11 +122,11 @@ def _parse_standup(state, _, args, time):
 def _list(state, iterator):
     items = list(iterator(state['items']))
     if not items:
-        return []
+        return state, []
 
     max_len = max(_item_len(state, item) for item in items)
 
-    return [
+    return state, [
         commands.println('{}{}{}'.format(
             ' ' * (max_len - _item_len(state, item)),
             '*' if item['num'] == state['selected'] else '',
@@ -142,32 +143,36 @@ def _item_len(state, item):
 def _parse_order(state, _, args, time):
     items = list(model.iter_status(state['items'], events.STATUS_TODO))
     if len(items) < 2:
-        return [commands.println('less than two todo items cannot be ordered')]
+        return state, [
+            commands.println('less than two todo items cannot be ordered')
+        ]
 
     content = ''.join(
         '#{} {}\n'.format(item['num'], item['text']) for item in items)
 
-    return [commands.editor(content, events.item_order_edited)]
+    return state, [commands.editor(content, events.item_order_edited)]
 
 
 @_parse.register('undo')
 def _parse_undo(state, _, args, time):
     if state['prev']:
-        return [commands.store(events.undone())]
+        return state, [commands.store(events.undone())]
 
-    return [commands.println('nothing to undo')]
+    return state, [commands.println('nothing to undo')]
 
 
 @_parse.register('edit')
 def _parse_edit(state, _, args, time):
     item, cmds = _get_item(state, args)
     if not item:
-        return cmds
+        return state, cmds
 
     content = item['text'] + '\n'
     num = item['num']
 
-    return [commands.editor(content, partial(events.item_edit_requested, num))]
+    return state, [
+        commands.editor(content, partial(events.item_edit_requested, num))
+    ]
 
 
 @_parse.register('s')
@@ -181,7 +186,7 @@ def _parse_edit(state, _, args, time):
 def _parse_status_change(state, cmd, args, time):
     item, cmds = _get_item(state, args)
     if not item:
-        return cmds
+        return state, cmds
 
     status = {
         's': events.STATUS_PROGRESS,
@@ -194,7 +199,9 @@ def _parse_status_change(state, cmd, args, time):
         'todo': events.STATUS_TODO,
     }.get(cmd)
 
-    return [commands.store(events.item_status_changed(item['num'], status))]
+    return state, [
+        commands.store(events.item_status_changed(item['num'], status))
+    ]
 
 
 def _get_item(state, args):
