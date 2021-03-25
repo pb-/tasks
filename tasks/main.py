@@ -34,8 +34,12 @@ def _interactive(version):
 
     try:
         while True:
-            state = _handle_event(update, state, events.input_read(input(
-                '{} '.format(render(state)))))
+            store_time_before = _store_time()
+            user_input = input('{} '.format(render(state)))
+            if _store_time() > store_time_before:
+                print('state modified externally, reloading')
+                state = _state()
+            state = _handle_event(update, state, events.input_read(user_input))
     except (EOFError, KeyboardInterrupt):
         print()
 
@@ -56,6 +60,13 @@ def _load():
     with open(_STORE) as f:
         for line in f:
             yield loads(line)
+
+
+def _store_time():
+    try:
+        return os.path.getmtime(_STORE)
+    except FileNotFoundError:
+        return 0
 
 
 def _handle_event(update_func, state, event):
