@@ -26,6 +26,19 @@ Follow these steps to add the output of `status` to your i3 status bar.
    ```
 
 
+## Ubiquitous Capture
+
+It is very useful to have a quick and low-friction way to add new items from anywhere. This can be achieved by combining tasks with a generic dialog tool and your window manager keybindings.
+
+Example using zenity and i3:
+
+```
+bindsym $mod+t exec --no-startup-id bash -c "zenity --title 'Add TODO item' --text 'What needs to be done?' --entry --width 450 | xargs tasks addt"
+```
+
+Note that you will want to use tasks >= 2.7.0 for this since it detects external modification of the state file.
+
+
 ## Automatic standup email
 
 The `standup` command shows (among other things) recently completed items. One use case is to send this list to your phone to have it ready for a daily standup. The repo contains a script (under `scripts`) to send stdin as an email with Mailgun which you can then combine with a cron job as follows.
