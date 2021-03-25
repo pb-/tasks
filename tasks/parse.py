@@ -73,6 +73,9 @@ def _parse_help(state, _, args, time):
 @_parse.register('addp')
 @_parse.register('addt')
 def _parse_add(state, cmd, args, time):
+    if not args.strip():
+        return state, [commands.println('no text given')]
+
     event = events.item_added(
         1 + state['last_num'], args, on_top=cmd == 'addt')
     status = {
