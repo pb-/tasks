@@ -1,7 +1,6 @@
 import re
 
-_RE = re.compile(
-    r'(?P<start>^|[^[])\[(?P<color>\w+) (?P<text>([^\[\]]|\[\[|\]\])*)\]')
+_RE = re.compile('([^[\\]\\\\]+|\\[|\\]|\\\\)')
 _MAP = {
     'blue': '1;34',
     'cyan': '1;36',
@@ -15,29 +14,72 @@ _MAP = {
 
 
 def shell_color(text):
-    return _unescape(_RE.subn(_repl_shell, text)[0])
+    return _format(text, True)
 
 
 def no_color(text):
-    return _unescape(_RE.subn(_repl_none, text)[0])
+    return _format(text, False)
 
 
 def escape(text):
-    return text.replace('[', '[[').replace(']', ']]')
+    return text.replace('\\', '\\\\').replace('[', '\\[').replace(']', '\\]')
 
 
-def _repl_shell(match):
-    return '{}\033[{}m{}\033[0m'.format(
-        match.group('start'), _MAP.get(match.group('color')),
-        match.group('text'))
+def _format(text, with_color):
+    return ''.join(t for t in _format_tokens(_tokenize(text), with_color))
 
 
-def _repl_none(match):
-    if match.group('color') in ('gray', 'normal', 'white'):
-        return match.group('start') + match.group('text')
-
-    return '{}[{}]'.format(match.group('start'), match.group('text'))
+def _tokenize(text):
+    return (m.group(0) for m in _RE.finditer(text))
 
 
-def _unescape(text):
-    return text.replace('[[', '[').replace(']]', ']')
+def _format_tokens(tokens, with_color):
+    while True:
+        try:
+            token = next(tokens)
+        except StopIteration:
+            return ''
+
+        if token == '\\':
+            yield _format_escape(tokens)
+        elif token == '[':
+            yield _format_open_bracket(tokens, with_color)
+        elif token == ']':
+            yield _format_close_bracket(with_color)
+        else:
+            yield token
+
+
+def _format_escape(tokens):
+    token = next(tokens)
+
+    if token in ('\\', '[', ']'):
+        return token
+
+    raise ParseException(f"unsupported escape sequence: '{token}'")
+
+
+def _format_open_bracket(tokens, with_color):
+    try:
+        color, text = next(tokens).split(' ', maxsplit=1)
+    except ValueError:
+        raise ParseException("empty color directive")
+
+    if color not in _MAP:
+        raise ParseException(f"unsupported color: '{color}'")
+
+    if with_color:
+        return f'\033[{_MAP[color]}m{text}'
+
+    return text
+
+
+def _format_close_bracket(with_color):
+    if with_color:
+        return '\033[0m'
+
+    return ''
+
+
+class ParseException(Exception):
+    pass
