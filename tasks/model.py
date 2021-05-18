@@ -1,4 +1,5 @@
 from itertools import chain
+from os import linesep
 
 from . import events
 from .color import escape
@@ -32,7 +33,7 @@ def next_backlog_num(items):
     return next(iter_backlog(items), {'num': 0})['num']
 
 
-def fmt_item(item, color=True, shortcut=None):
+def fmt_item(item, shortcut=None):
     color = {
         events.STATUS_TODO: 'blue',
         events.STATUS_PROGRESS: 'yellow',
@@ -45,8 +46,11 @@ def fmt_item(item, color=True, shortcut=None):
         '([cyan {}]) '.format(shortcut) if shortcut else '... '
     )
 
+    title, *body = item['text'].split(linesep, maxsplit=1)
+    text = '{}{}'.format(escape(title), ' (…)' if len(body) else '')
+
     return '[gray #{}] {}[{} {}] [white {}]'.format(
-        item['num'], hint, color, item['status'], escape(item['text']))
+        item['num'], hint, color, item['status'], text)
 
 
 def iter_backlog(items):
