@@ -46,7 +46,7 @@ def fmt_item(item, shortcut=None):
         '([cyan {}]) '.format(shortcut) if shortcut else '... '
     )
 
-    (title, *body) = item['text'].split(linesep)
+    title, *body = item['text'].split(linesep, maxsplit=1)
     text = '{}{}'.format(escape(title), ' (…)' if len(body) else '')
 
     return '[gray #{}] {}[{} {}] [white {}]'.format(
